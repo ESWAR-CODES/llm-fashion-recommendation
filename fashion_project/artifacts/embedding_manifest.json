@@ -1,0 +1,35 @@
+{
+  "project_title": "LLM-Assisted Personalized Fashion Recommendation Using User Preferences and Semantic Retrieval",
+  "phase": 2,
+  "manifest_version": "1.0.0",
+  "creation_timestamp": "2026-11-07T18:20:49.653214+00:00",
+  "embedding_model": {
+    "name": "sentence-transformers/all-MiniLM-L6-v2",
+    "revision": "default",
+    "dimension": 384,
+    "normalize_embeddings": true
+  },
+  "dataset_linkage": {
+    "num_products": 10000,
+    "catalog_item_count": 10000,
+    "catalog_manifest_sha256": "3128cfaf45088380f37ddbd3fb6f03f6bce79403d0d1ff00dab7f92c0ac80f2a"
+  },
+  "storage_format": {
+    "file": "embeddings.npy",
+    "dtype": "float32",
+    "shape": [
+      10000,
+      384
+    ],
+    "sha256": "8024ef7f2f9698d389be358092e89e90414847927b4fb8d5700c31d1db1e3b54"
+  },
+  "description_artifact": {
+    "file": "product_descriptions.csv",
+    "sha256": "7c442a3d9cabfb7d7316d8d4b3022f20d4bf9eb52e731648a2a528c935d845a1",
+    "template": "Name: {productDisplayName}\\nType: {articleType} | Color: {baseColour} | Usage: {usage}\\nCategory: {masterCategory} | Season: {season}"
+  },
+  "generation_config": {
+    "batch_size": 64,
+    "random_seed": 42
+  }
+}

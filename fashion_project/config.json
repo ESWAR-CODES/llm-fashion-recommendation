@@ -1,17 +1,17 @@
 {
   "project_title": "LLM-Assisted Personalized Fashion Recommendation Using User Preferences and Semantic Retrieval",
-  "current_phase": 1,
+  "current_phase": 2,
   "random_seed": 42,
   "environment": {
     "is_colab": false,
     "python_version": "3.14.0",
-    "pytorch_version": "Not Installed",
+    "pytorch_version": "2.15.0+cpu",
     "cuda_available": false,
     "gpu_name": "None",
     "gpu_memory_gb": 0.0,
     "system_ram_gb": 15.82,
     "disk_total_gb": 221.37,
-    "disk_free_gb": 95.98,
+    "disk_free_gb": 95.8,
     "os_platform": "Windows-11-10.0.26300-SP0"
   },
   "dataset": {
@@ -26,8 +26,17 @@
     "catalog_ids_json": "fashion_project\\artifacts\\catalog_ids.json",
     "data_audit_json": "fashion_project\\artifacts\\data_audit.json",
     "catalog_manifest_json": "fashion_project\\artifacts\\catalog_manifest.json",
+    "product_descriptions_csv": "fashion_project\\artifacts\\product_descriptions.csv",
+    "embeddings_npy": "fashion_project\\artifacts\\embeddings.npy",
+    "embedding_manifest_json": "fashion_project\\artifacts\\embedding_manifest.json",
     "backups_dir": "fashion_project\\backups",
     "logs_dir": "fashion_project\\logs"
+  },
+  "embedding_model": {
+    "name": "sentence-transformers/all-MiniLM-L6-v2",
+    "dimension": 384,
+    "normalized": true,
+    "batch_size": 64
   },
   "planned_models": {
     "language_model": "Qwen/Qwen2.5-3B-Instruct",
