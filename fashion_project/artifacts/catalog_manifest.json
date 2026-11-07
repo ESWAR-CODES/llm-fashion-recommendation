@@ -1,0 +1,58 @@
+{
+  "project_title": "LLM-Assisted Personalized Fashion Recommendation Using User Preferences and Semantic Retrieval",
+  "phase": 1,
+  "manifest_version": "1.0.0",
+  "creation_timestamp": "2026-11-07T17:44:00.913573+00:00",
+  "dataset_source_url": "https://www.kaggle.com/datasets/paramaggarwal/fashion-product-images-small",
+  "dataset_download_date": "2026-11-07",
+  "dataset_file_info": {
+    "styles_csv_path": "fashion_project\\data\\raw\\styles.csv",
+    "styles_csv_size_bytes": 4332000,
+    "styles_csv_sha256": "cd86bd2d71b4065ed91786a52aa6ccc0eed343949791c663be9af35f105a128c",
+    "images_directory": "fashion_project\\data\\raw\\images",
+    "total_raw_images": 44441
+  },
+  "random_seed": 42,
+  "selection_rules": "Keep Apparel and Footwear products only. Remove duplicate product IDs. Exclude records with missing or corrupted image files. Exclude records with missing required attributes (gender, masterCategory, subCategory, articleType, baseColour, season, year, usage, productDisplayName). Perform reproducible stratified sampling across articleType groups to select a frozen subset of 10,000 items. Sort catalog strictly ascending by string product ID.",
+  "catalog_item_count": 10000,
+  "catalog_column_names": [
+    "id",
+    "gender",
+    "masterCategory",
+    "subCategory",
+    "articleType",
+    "baseColour",
+    "season",
+    "year",
+    "usage",
+    "productDisplayName"
+  ],
+  "product_id_ordering_information": "Ascending alphanumeric string sort",
+  "sha256_hashes": {
+    "catalog_csv": "5debaa73b83f50f6e072dcf3ec262c2f32ea7e6c30e79d4a9ef4f318c7eab032",
+    "catalog_ids_json": "d2adae7bbb5b30fa06b3a0293dac18ff1367872451ddb8bb3ae06c28c0114f3f",
+    "styles_csv": "cd86bd2d71b4065ed91786a52aa6ccc0eed343949791c663be9af35f105a128c",
+    "data_audit_json": "5822de897c95da1cfb41a079465de25105880d58f038eb0530c1300bb23fdd73"
+  },
+  "cleaning_configuration": {
+    "allowed_master_categories": [
+      "Apparel",
+      "Footwear"
+    ],
+    "max_catalog_size": 10000,
+    "random_seed": 42,
+    "require_image_load_verification": true,
+    "strict_metadata_fields": [
+      "id",
+      "gender",
+      "masterCategory",
+      "subCategory",
+      "articleType",
+      "baseColour",
+      "season",
+      "year",
+      "usage",
+      "productDisplayName"
+    ]
+  }
+}

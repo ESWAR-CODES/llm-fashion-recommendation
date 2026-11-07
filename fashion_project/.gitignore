@@ -1,0 +1,52 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.pytest_cache/
+.mypy_cache/
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+# Secrets
+.env
+.env.*
+!.env.example
+kaggle.json
+*.pem
+*.key
+
+# Raw dataset - do not upload
+data/raw/
+*.zip
+
+# Runtime and temporary files
+logs/*
+!logs/.gitkeep
+
+backups/*
+!backups/.gitkeep
+
+.ipynb_checkpoints/
+
+# Model files and generated checkpoints
+*.pt
+*.pth
+*.ckpt
+*.safetensors
+*.bin
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor files
+.vscode/
+.idea/
+
+# Temporary files
+*.tmp
+*.log

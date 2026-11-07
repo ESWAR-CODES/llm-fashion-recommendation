@@ -1,0 +1,36 @@
+{
+  "project_title": "LLM-Assisted Personalized Fashion Recommendation Using User Preferences and Semantic Retrieval",
+  "current_phase": 1,
+  "random_seed": 42,
+  "environment": {
+    "is_colab": false,
+    "python_version": "3.14.0",
+    "pytorch_version": "Not Installed",
+    "cuda_available": false,
+    "gpu_name": "None",
+    "gpu_memory_gb": 0.0,
+    "system_ram_gb": 15.82,
+    "disk_total_gb": 221.37,
+    "disk_free_gb": 95.98,
+    "os_platform": "Windows-11-10.0.26300-SP0"
+  },
+  "dataset": {
+    "source_url": "https://www.kaggle.com/datasets/paramaggarwal/fashion-product-images-small",
+    "download_date": "2026-11-07",
+    "styles_csv": "fashion_project\\data\\raw\\styles.csv",
+    "images_dir": "fashion_project\\data\\raw\\images",
+    "archive_preserved": "fashion_project/data/raw/fashion-product-images-small.zip"
+  },
+  "paths": {
+    "catalog_csv": "fashion_project\\artifacts\\catalog.csv",
+    "catalog_ids_json": "fashion_project\\artifacts\\catalog_ids.json",
+    "data_audit_json": "fashion_project\\artifacts\\data_audit.json",
+    "catalog_manifest_json": "fashion_project\\artifacts\\catalog_manifest.json",
+    "backups_dir": "fashion_project\\backups",
+    "logs_dir": "fashion_project\\logs"
+  },
+  "planned_models": {
+    "language_model": "Qwen/Qwen2.5-3B-Instruct",
+    "embedding_model": "sentence-transformers/all-MiniLM-L6-v2"
+  }
+}
