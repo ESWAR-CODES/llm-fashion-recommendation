@@ -1,6 +1,6 @@
 {
   "project_title": "LLM-Assisted Personalized Fashion Recommendation Using User Preferences and Semantic Retrieval",
-  "current_phase": 3,
+  "current_phase": 4,
   "random_seed": 42,
   "environment": {
     "is_colab": false,
@@ -31,13 +31,24 @@
     "embedding_manifest_json": "fashion_project\\artifacts\\embedding_manifest.json",
     "profiles_sqlite": "fashion_project\\backups\\profiles.sqlite",
     "backups_dir": "fashion_project\\backups",
-    "logs_dir": "fashion_project\\logs"
+    "logs_dir": "fashion_project\\logs",
+    "docs_dir": "fashion_project\\docs",
+    "engines_dir": "fashion_project\\engines",
+    "tests_dir": "fashion_project\\tests"
   },
   "embedding_model": {
     "name": "sentence-transformers/all-MiniLM-L6-v2",
     "dimension": 384,
     "normalized": true,
     "batch_size": 64
+  },
+  "language_model": {
+    "name": "Qwen/Qwen2.5-3B-Instruct",
+    "tokenizer_vocab_size": 151643,
+    "chat_template": "official",
+    "decoding": "deterministic",
+    "max_new_tokens": 256,
+    "retry_limit": 1
   },
   "phase3_personalization": {
     "ranking_formula": "score = 0.8 * cosine(q, item_vector) + 0.2 * cosine(u, item_vector)",
@@ -53,8 +64,12 @@
       "exclude_colors"
     ]
   },
-  "planned_models": {
-    "language_model": "Qwen/Qwen2.5-3B-Instruct",
-    "embedding_model": "sentence-transformers/all-MiniLM-L6-v2"
+  "phase4_nlp": {
+    "preference_extractor": "engines/preference_extractor.py",
+    "explanation_engine": "engines/explanation_engine.py",
+    "validation_suite": "tests/validate_phase4.py",
+    "evidence_grounding": true,
+    "unsupported_claim_rejection": true,
+    "deterministic_explanation_fallback": true
   }
 }
