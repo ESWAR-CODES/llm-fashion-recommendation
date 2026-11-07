@@ -1,6 +1,6 @@
 {
   "project_title": "LLM-Assisted Personalized Fashion Recommendation Using User Preferences and Semantic Retrieval",
-  "current_phase": 2,
+  "current_phase": 3,
   "random_seed": 42,
   "environment": {
     "is_colab": false,
@@ -29,6 +29,7 @@
     "product_descriptions_csv": "fashion_project\\artifacts\\product_descriptions.csv",
     "embeddings_npy": "fashion_project\\artifacts\\embeddings.npy",
     "embedding_manifest_json": "fashion_project\\artifacts\\embedding_manifest.json",
+    "profiles_sqlite": "fashion_project\\backups\\profiles.sqlite",
     "backups_dir": "fashion_project\\backups",
     "logs_dir": "fashion_project\\logs"
   },
@@ -37,6 +38,20 @@
     "dimension": 384,
     "normalized": true,
     "batch_size": 64
+  },
+  "phase3_personalization": {
+    "ranking_formula": "score = 0.8 * cosine(q, item_vector) + 0.2 * cosine(u, item_vector)",
+    "query_weight": 0.8,
+    "profile_weight": 0.2,
+    "top_k": 5,
+    "database": "backups/profiles.sqlite",
+    "supported_constraints": [
+      "articleType",
+      "baseColour",
+      "usage",
+      "masterCategory",
+      "exclude_colors"
+    ]
   },
   "planned_models": {
     "language_model": "Qwen/Qwen2.5-3B-Instruct",
