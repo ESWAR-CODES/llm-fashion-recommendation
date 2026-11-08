@@ -39,10 +39,45 @@ This project implements an end-to-end, reproducible, lightweight fashion recomme
 
 ```
 fashion_project/
+├── app.py                         # Streamlit interactive ML web application
 ├── Fashion_Recommender.ipynb      # Main interactive 10-section notebook
 ├── README.md                      # Comprehensive project manual
+├── ARCHITECTURE.md                # System architecture documentation
+├── DATASET.md                     # Dataset documentation and audit specifications
+├── MODEL_DOCUMENTATION.md         # MiniLM, CLIP, and Qwen model documentation
+├── AGENTS.md                      # Developer & AI Agent coding rules
 ├── config.json                    # Configuration, seeds, model revisions & paths
-├── requirements-lock.txt          # Frozen dependencies
+├── requirements.txt               # Modular application dependencies
+├── requirements-lock.txt          # Frozen pinned dependencies
+│
+├── services/                      # Modular independent ML services
+│   ├── config_service.py          # Portable path resolution & configuration loader
+│   ├── dataset_service.py         # Robust raw dataset loader & data audit generator
+│   ├── image_service.py           # Centralized product image resolver & LRU cache
+│   ├── catalog_service.py         # Frozen 10,000-item catalog service
+│   ├── embedding_service.py       # SentenceTransformers MiniLM embedding manager
+│   ├── retrieval_service.py       # Pure NumPy matrix dot product cosine similarity
+│   ├── ranking_service.py         # Candidate filtering & 0.8q + 0.2u personalized ranker
+│   ├── preference_service.py      # Conversational preference extraction & provider interface
+│   ├── explanation_service.py     # Metadata-grounded explanation generator
+│   ├── clip_service.py            # CLIP visual retrieval foundation (ViT-B/32)
+│   └── persistence_service.py     # SQLite profile repository & backup manager
+│
+├── ui/                            # Reusable Streamlit UI components
+│   ├── styles.py                  # Custom CSS typography & card design
+│   ├── components.py              # Reusable metric boxes, badges, product cards
+│   ├── sidebar.py                 # Navigation & profile selection sidebar
+│   └── views/                     # Streamlit application views
+│       ├── dashboard.py           # Operational overview & readiness health
+│       ├── discovery.py           # Semantic search & personalized catalog browsing
+│       ├── assistant.py           # Conversational AI assistant & constraints inspector
+│       ├── collection.py          # Saved profile history, likes & preferences
+│       └── model_insights.py      # Hardware telemetry, embedding shapes & manifests
+│
+├── scripts/
+│   ├── validate_dataset.py        # Dataset installation & Pillow validation script
+│   ├── generate_clip_embeddings.py# Offline batch CLIP image indexing script
+│   └── export_package.py          # Sanitized project archive exporter
 │
 ├── interactive_ui.py              # ipywidgets application implementation (Step 9)
 ├── backup_manager.py              # SQLite Online Backup API snapshot manager
@@ -107,9 +142,26 @@ fashion_project/
 
 ---
 
-## 4. Installation & Environment Setup
+## 4. Launching the Streamlit Web Application
 
-### 4.1 Local Environment
+To launch the professional Streamlit fashion recommendation application:
+
+```bash
+streamlit run fashion_project/app.py
+```
+
+### Application Features:
+- **Dashboard:** Operational health overview, readiness telemetry, dataset summary, and catalog sample cards.
+- **Fashion Discovery:** Natural language search powered by MiniLM cosine similarity and multi-stage personalized ranking.
+- **AI Assistant:** Conversational preference extraction with active constraint inspection.
+- **My Collection:** Saved taste profiles, liked items, and product feedback history.
+- **Model Insights:** Detailed hardware telemetry, embedding matrix dimensions, and CLIP foundation status.
+
+---
+
+## 5. Installation & Environment Setup
+
+### 5.1 Local Environment
 ```bash
 # Clone the repository
 git clone https://github.com/ESWAR-CODES/llm-fashion-recommendation.git
@@ -126,7 +178,7 @@ source venv/bin/activate
 pip install -r requirements-lock.txt
 ```
 
-### 4.2 Google Colab Environment
+### 5.2 Google Colab Environment
 Open `Fashion_Recommender.ipynb` in Google Colab. In Cell 1, run:
 ```python
 %pip install pandas numpy pillow sentence-transformers
@@ -140,7 +192,7 @@ drive.mount('/content/drive')
 
 ---
 
-## 5. Running the Interactive Interface (Step 9)
+## 6. Running the Jupyter / Colab Interactive Interface
 
 Inside `Fashion_Recommender.ipynb`, navigate to **Section 8: Interactive Interface** and run:
 ```python
@@ -159,7 +211,7 @@ app.render()
 
 ---
 
-## 6. Formal Evaluation Benchmark (Step 10)
+## 7. Formal Evaluation Benchmark (Step 10)
 
 To run the full 4-system evaluation comparing Keyword Baseline, Semantic Retrieval, Personalized Retrieval, and the Complete Pipeline:
 ```bash
@@ -185,29 +237,16 @@ python fashion_project/evaluation/run_evaluation.py
 
 ---
 
-## 7. Running the Automated Test Suite
+## 8. Running the Automated Test Suite
 
-To verify all 38 unit and integration tests:
+To verify all unit and integration tests:
 ```bash
 python fashion_project/tests/run_all_tests.py
-```
-**Output:**
-```
-================================================================================
-CONSOLIDATED TEST SUITE EXECUTION
-================================================================================
-Ran 38 tests in 15.82s
-
-OK
-================================================================================
-TESTS RUN: 38 | FAILURES: 0 | ERRORS: 0 | TIME: 21.12s
-OVERALL STATUS: ALL TESTS PASSED [PASS]
-================================================================================
 ```
 
 ---
 
-## 8. Persistence & Recovery Workflow
+## 9. Persistence & Recovery Workflow
 
 - **Snapshot Creation:**
   ```python
@@ -227,7 +266,7 @@ OVERALL STATUS: ALL TESTS PASSED [PASS]
 
 ---
 
-## 9. Academic Reference
+## 10. Academic Reference
 
 Base Paper Reference:  
 > Wang, X., Li, Y., Zhou, K., and Tu, W. (2025). *LLM-SCRec: LLM-Powered Style-Context Insights for Fashion Recommendation.* IEEE Access, 13, 192143–192154. DOI: 10.1109/ACCESS.2025.3628684.

@@ -1,46 +1,49 @@
 {
-  "project_title": "LLM-Assisted Personalized Fashion Recommendation Using User Preferences and Semantic Retrieval",
-  "current_phase": 5,
+  "project_title": "LLM-Assisted Personalized Fashion Recommendation System",
+  "version": "1.0.0",
   "random_seed": 42,
   "environment": {
     "is_colab": false,
     "python_version": "3.14.0",
     "pytorch_version": "2.15.0+cpu",
     "cuda_available": false,
-    "gpu_name": "None",
-    "gpu_memory_gb": 0.0,
-    "system_ram_gb": 15.82,
-    "disk_total_gb": 221.37,
-    "disk_free_gb": 95.8,
-    "os_platform": "Windows-11-10.0.26300-SP0"
+    "target_platform": "Streamlit Web Application & Python Services"
   },
   "dataset": {
     "source_url": "https://www.kaggle.com/datasets/paramaggarwal/fashion-product-images-small",
-    "download_date": "2026-11-07",
-    "styles_csv": "fashion_project\\data\\raw\\styles.csv",
-    "images_dir": "fashion_project\\data\\raw\\images",
-    "archive_preserved": "fashion_project/data/raw/fashion-product-images-small.zip"
+    "styles_csv": "data/raw/styles.csv",
+    "images_dir": "data/raw/images",
+    "archive_preserved": "data/raw/fashion-product-images-small.zip"
   },
   "paths": {
-    "catalog_csv": "fashion_project\\artifacts\\catalog.csv",
-    "catalog_ids_json": "fashion_project\\artifacts\\catalog_ids.json",
-    "data_audit_json": "fashion_project\\artifacts\\data_audit.json",
-    "catalog_manifest_json": "fashion_project\\artifacts\\catalog_manifest.json",
-    "product_descriptions_csv": "fashion_project\\artifacts\\product_descriptions.csv",
-    "embeddings_npy": "fashion_project\\artifacts\\embeddings.npy",
-    "embedding_manifest_json": "fashion_project\\artifacts\\embedding_manifest.json",
-    "profiles_sqlite": "fashion_project\\backups\\profiles.sqlite",
-    "backups_dir": "fashion_project\\backups",
-    "logs_dir": "fashion_project\\logs",
-    "docs_dir": "fashion_project\\docs",
-    "engines_dir": "fashion_project\\engines",
-    "tests_dir": "fashion_project\\tests"
+    "catalog_csv": "artifacts/catalog.csv",
+    "catalog_ids_json": "artifacts/catalog_ids.json",
+    "data_audit_json": "artifacts/data_audit.json",
+    "catalog_manifest_json": "artifacts/catalog_manifest.json",
+    "product_descriptions_csv": "artifacts/product_descriptions.csv",
+    "embeddings_npy": "artifacts/embeddings.npy",
+    "embedding_manifest_json": "artifacts/embedding_manifest.json",
+    "clip_embeddings_npy": "artifacts/clip_embeddings.npy",
+    "clip_manifest_json": "artifacts/clip_manifest.json",
+    "profiles_sqlite": "backups/profiles.sqlite",
+    "backups_dir": "backups",
+    "logs_dir": "logs",
+    "docs_dir": "docs",
+    "services_dir": "services",
+    "tests_dir": "tests"
   },
   "embedding_model": {
     "name": "sentence-transformers/all-MiniLM-L6-v2",
     "dimension": 384,
     "normalized": true,
     "batch_size": 64
+  },
+  "clip_model": {
+    "name": "sentence-transformers/clip-ViT-B-32",
+    "dimension": 512,
+    "normalized": true,
+    "batch_size": 64,
+    "device": "cpu"
   },
   "language_model": {
     "name": "Qwen/Qwen2.5-3B-Instruct",
@@ -50,39 +53,18 @@
     "max_new_tokens": 256,
     "retry_limit": 1
   },
-  "phase3_personalization": {
+  "personalization": {
     "ranking_formula": "score = 0.8 * cosine(q, item_vector) + 0.2 * cosine(u, item_vector)",
     "query_weight": 0.8,
     "profile_weight": 0.2,
     "top_k": 5,
-    "database": "backups/profiles.sqlite",
     "supported_constraints": [
       "articleType",
       "baseColour",
       "usage",
       "masterCategory",
+      "gender",
       "exclude_colors"
     ]
-  },
-  "phase4_nlp": {
-    "preference_extractor": "engines/preference_extractor.py",
-    "explanation_engine": "engines/explanation_engine.py",
-    "validation_suite": "tests/validate_phase4.py",
-    "evidence_grounding": true,
-    "unsupported_claim_rejection": true,
-    "deterministic_explanation_fallback": true
-  },
-  "phase5_integration": {
-    "interactive_ui_module": "interactive_ui.py",
-    "backup_manager": "backup_manager.py",
-    "profiles_snapshot": "fashion_project/backups/profiles_snapshot.sqlite",
-    "evaluation_runner": "fashion_project/evaluation/run_evaluation.py",
-    "development_requests": "fashion_project/evaluation/development_requests.json",
-    "test_requests": "fashion_project/evaluation/test_requests.json",
-    "predictions": "fashion_project/evaluation/predictions.jsonl",
-    "metrics": "fashion_project/evaluation/metrics.json",
-    "human_judgements": "fashion_project/evaluation/human_judgements.csv",
-    "consolidated_tests": "fashion_project/tests/run_all_tests.py",
-    "status": "integrated_and_validated"
   }
 }
