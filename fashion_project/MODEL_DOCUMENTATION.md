@@ -48,9 +48,10 @@ Category: {masterCategory} | Season: {season}
 - **Image Preprocessing:** 224x224 RGB input, bicubic interpolation, standard ImageNet normalization
 
 ### 3.2 Visual Indexing Protocol
-- Product images are encoded offline in batches of 64 using `scripts/generate_clip_embeddings.py`.
-- Embeddings are unit-normalized ($L_2 = 1.0$) and saved to `artifacts/clip_embeddings.npy` (20.48 MB for 10,000 items).
-- Row $j$ strictly corresponds to product ID at index $j$ in `artifacts/catalog_ids.json`.
+- Product images are encoded offline in batches of 128 using `scripts/generate_clip_embeddings.py`.
+- Embeddings are unit-normalized ($L_2 = 1.0$) and saved to `artifacts/clip_embeddings.npy` and `artifacts/clip_image_embeddings.npy` (19.53 MB for 10,000 items).
+- Row $j$ strictly corresponds to product ID at index $j$ in `artifacts/clip_catalog_ids.json` and `artifacts/catalog_ids.json`.
+- Indexing completed on CPU across all 10,000 items (19.3 img/s, 0 failed images, verified by `validate_clip_artifacts()`).
 
 ### 3.3 Hardware & Coexistence Rules
 - **Offline Indexing:** Precomputed embeddings are reused during web application startup. Zero re-embedding occurs during normal startup.

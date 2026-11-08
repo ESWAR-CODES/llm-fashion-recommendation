@@ -29,7 +29,11 @@ fashion_project/
     ├── data_audit.json                        # Ingestion audit log
     ├── product_descriptions.csv               # Standardized text descriptions
     ├── embeddings.npy                         # (10000, 384) MiniLM embedding matrix
-    └── embedding_manifest.json                # Sentence-transformers configuration
+    ├── embedding_manifest.json                # Sentence-transformers configuration
+    ├── clip_embeddings.npy                    # (10000, 512) CLIP ViT-B/32 image embedding matrix
+    ├── clip_image_embeddings.npy              # Canonical duplicate sync of CLIP vectors
+    ├── clip_catalog_ids.json                  # Product ID sequence mapping for CLIP
+    └── clip_manifest.json                     # CLIP ViT-B/32 offline indexing manifest
 ```
 
 ---

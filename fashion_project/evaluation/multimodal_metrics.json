@@ -1,0 +1,32 @@
+{
+  "System_A_Keyword": {
+    "precision_at_5": 0.74,
+    "ndcg_at_5": 1.0,
+    "constraint_violation_rate": 0.0,
+    "average_latency_ms": 33.52
+  },
+  "System_B_MiniLM_Text": {
+    "precision_at_5": 0.8,
+    "ndcg_at_5": 0.9,
+    "constraint_violation_rate": 0.0,
+    "average_latency_ms": 1372.45
+  },
+  "System_C_CLIP_Visual": {
+    "precision_at_5": 0.66,
+    "ndcg_at_5": 0.9956,
+    "constraint_violation_rate": 0.0,
+    "average_latency_ms": 547.02
+  },
+  "System_D_Hybrid_Multimodal": {
+    "precision_at_5": 0.9,
+    "ndcg_at_5": 1.0,
+    "constraint_violation_rate": 0.0,
+    "average_latency_ms": 155.9
+  },
+  "System_E_Personalized_Hybrid": {
+    "precision_at_5": 0.9,
+    "ndcg_at_5": 1.0,
+    "constraint_violation_rate": 0.0,
+    "average_latency_ms": 155.7
+  }
+}

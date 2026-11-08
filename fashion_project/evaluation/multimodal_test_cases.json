@@ -1,0 +1,202 @@
+[
+  {
+    "id": "mm_01",
+    "query_text": "white casual skirts",
+    "query_image_product_id": "10000",
+    "constraints": {
+      "masterCategory": ["Apparel"],
+      "articleType": ["Skirts"]
+    },
+    "relevance_criteria": {
+      "masterCategory": "Apparel",
+      "articleType": "Skirts",
+      "baseColour": "White"
+    },
+    "user_profile": {
+      "profile_id": "mm_eval_usr_1",
+      "liked_ids": ["10000"],
+      "preferred_colors": ["White"],
+      "preferred_categories": ["Apparel"]
+    }
+  },
+  {
+    "id": "mm_02",
+    "query_text": "grey athletic sports shorts",
+    "query_image_product_id": "10004",
+    "constraints": {
+      "masterCategory": ["Apparel"],
+      "usage": ["Sports"]
+    },
+    "relevance_criteria": {
+      "masterCategory": "Apparel",
+      "articleType": "Shorts",
+      "baseColour": "Grey"
+    },
+    "user_profile": {
+      "profile_id": "mm_eval_usr_2",
+      "liked_ids": ["10004"],
+      "preferred_colors": ["Grey"],
+      "preferred_categories": ["Apparel"]
+    }
+  },
+  {
+    "id": "mm_03",
+    "query_text": "white casual tshirts",
+    "query_image_product_id": "10015",
+    "constraints": {
+      "masterCategory": ["Apparel"],
+      "articleType": ["Tshirts"]
+    },
+    "relevance_criteria": {
+      "masterCategory": "Apparel",
+      "articleType": "Tshirts",
+      "baseColour": "White"
+    },
+    "user_profile": {
+      "profile_id": "mm_eval_usr_3",
+      "liked_ids": ["10015"],
+      "preferred_colors": ["White"],
+      "preferred_categories": ["Apparel"]
+    }
+  },
+  {
+    "id": "mm_04",
+    "query_text": "pink casual summer dresses",
+    "query_image_product_id": "10016",
+    "constraints": {
+      "masterCategory": ["Apparel"],
+      "articleType": ["Dresses"]
+    },
+    "relevance_criteria": {
+      "masterCategory": "Apparel",
+      "articleType": "Dresses",
+      "baseColour": "Pink"
+    },
+    "user_profile": {
+      "profile_id": "mm_eval_usr_4",
+      "liked_ids": ["10016"],
+      "preferred_colors": ["Pink"],
+      "preferred_categories": ["Apparel"]
+    }
+  },
+  {
+    "id": "mm_05",
+    "query_text": "black workout sports shorts",
+    "query_image_product_id": "10020",
+    "constraints": {
+      "masterCategory": ["Apparel"],
+      "usage": ["Sports"]
+    },
+    "relevance_criteria": {
+      "masterCategory": "Apparel",
+      "articleType": "Shorts",
+      "baseColour": "Black"
+    },
+    "user_profile": {
+      "profile_id": "mm_eval_usr_5",
+      "liked_ids": ["10020"],
+      "preferred_colors": ["Black"],
+      "preferred_categories": ["Apparel"]
+    }
+  },
+  {
+    "id": "mm_06",
+    "query_text": "navy blue sports tshirts",
+    "query_image_product_id": "10031",
+    "constraints": {
+      "masterCategory": ["Apparel"],
+      "baseColour": ["Navy Blue"]
+    },
+    "relevance_criteria": {
+      "masterCategory": "Apparel",
+      "articleType": "Tshirts",
+      "baseColour": "Navy Blue"
+    },
+    "user_profile": {
+      "profile_id": "mm_eval_usr_6",
+      "liked_ids": ["10031"],
+      "preferred_colors": ["Navy Blue"],
+      "preferred_categories": ["Apparel"]
+    }
+  },
+  {
+    "id": "mm_07",
+    "query_text": "white running sports shoes",
+    "query_image_product_id": "10039",
+    "constraints": {
+      "masterCategory": ["Footwear"],
+      "usage": ["Sports"]
+    },
+    "relevance_criteria": {
+      "masterCategory": "Footwear",
+      "articleType": "Sports Shoes",
+      "baseColour": "White"
+    },
+    "user_profile": {
+      "profile_id": "mm_eval_usr_7",
+      "liked_ids": ["10039"],
+      "preferred_colors": ["White"],
+      "preferred_categories": ["Footwear"]
+    }
+  },
+  {
+    "id": "mm_08",
+    "query_text": "black athletic running sneakers",
+    "query_image_product_id": "10102",
+    "constraints": {
+      "masterCategory": ["Footwear"],
+      "baseColour": ["Black"]
+    },
+    "relevance_criteria": {
+      "masterCategory": "Footwear",
+      "articleType": "Sports Shoes",
+      "baseColour": "Black"
+    },
+    "user_profile": {
+      "profile_id": "mm_eval_usr_8",
+      "liked_ids": ["10102"],
+      "preferred_colors": ["Black"],
+      "preferred_categories": ["Footwear"]
+    }
+  },
+  {
+    "id": "mm_09",
+    "query_text": "black casual sports sandals",
+    "query_image_product_id": "10114",
+    "constraints": {
+      "masterCategory": ["Footwear"],
+      "articleType": ["Sports Sandals"]
+    },
+    "relevance_criteria": {
+      "masterCategory": "Footwear",
+      "articleType": "Sports Sandals",
+      "baseColour": "Black"
+    },
+    "user_profile": {
+      "profile_id": "mm_eval_usr_9",
+      "liked_ids": ["10114"],
+      "preferred_colors": ["Black"],
+      "preferred_categories": ["Footwear"]
+    }
+  },
+  {
+    "id": "mm_10",
+    "query_text": "black formal leather shoes",
+    "query_image_product_id": "10128",
+    "constraints": {
+      "masterCategory": ["Footwear"],
+      "usage": ["Formal"]
+    },
+    "relevance_criteria": {
+      "masterCategory": "Footwear",
+      "articleType": "Formal Shoes",
+      "baseColour": "Black"
+    },
+    "user_profile": {
+      "profile_id": "mm_eval_usr_10",
+      "liked_ids": ["10128"],
+      "preferred_colors": ["Black"],
+      "preferred_categories": ["Footwear"]
+    }
+  }
+]

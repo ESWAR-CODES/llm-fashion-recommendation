@@ -32,8 +32,8 @@ The application is structured into decoupled, independently testable Python serv
 │  ┌────────────────────────────────────────────────────┐                │
 │  │                   RankingService                   │                │
 │  │  - Strict Hard Constraints (AND / OR / NOT)        │                │
-│  │  - score = 0.8*cos(q,v) + 0.2*cos(u,v)             │                │
-│  │  - Dismissal & Onboarding Likes Exclusion          │                │
+│  │  - Multimodal Hybrid: Wt*St + Wv*Sv + Wp*Sp        │                │
+│  │  - Dismissal & Feedback Exclusion                  │                │
 │  │  - Deterministic Tie-Breaking (Score Desc, ID Asc) │                │
 │  └───────────┬───────────────────────────┬────────────┘                │
 │              │                           │                             │

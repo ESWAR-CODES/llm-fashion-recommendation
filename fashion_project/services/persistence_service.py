@@ -201,6 +201,20 @@ class PersistenceService:
             )
         conn.close()
 
+    def remove_feedback(self, profile_id: str, item_id: str) -> bool:
+        """Remove a previously recorded feedback (unlike / undo dismissal)."""
+        pid_str = str(profile_id).strip()
+        item_str = str(item_id).strip()
+        conn = self._get_connection()
+        with conn:
+            cur = conn.execute(
+                "DELETE FROM feedback WHERE profile_id = ? AND item_id = ?",
+                (pid_str, item_str)
+            )
+            deleted = cur.rowcount > 0
+        conn.close()
+        return deleted
+
     def get_feedback(self, profile_id: str) -> Dict[str, List[str]]:
         """Retrieve all recorded likes and dismissals for a profile."""
         conn = self._get_connection()

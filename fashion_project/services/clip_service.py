@@ -10,13 +10,15 @@ Responsibilities:
 - Graceful text-only fallback when visual embeddings are not yet generated.
 - Lazy, safe encoder initialization with memory capacity verification.
 - Cosine similarity visual retrieval from uploaded image or catalog product image.
+- Safe upload validation (file size, format, Pillow decodability).
 """
 
+import io
 import sys
 import json
 import hashlib
 from pathlib import Path
-from typing import Optional, Dict, Any, List, Tuple
+from typing import Optional, Dict, Any, List, Tuple, Union
 
 # Ensure fashion_project root is in sys.path
 _current_dir = Path(__file__).resolve().parent
@@ -77,23 +79,45 @@ class CLIPService:
 
     def _try_load_embeddings(self):
         """Load embeddings if artifact exists; do not fail if not yet generated."""
-        if self.embeddings_path.exists():
+        self.reload_embeddings()
+
+    def reload_embeddings(self) -> bool:
+        """Attempt to (re)load precomputed CLIP embeddings from disk."""
+        cfg = ConfigService.get_instance()
+        candidates = [
+            self.embeddings_path,
+            cfg.artifacts_dir / "clip_image_embeddings.npy",
+            cfg.artifacts_dir / "clip_embeddings.npy"
+        ]
+        loaded = False
+        for p in candidates:
+            if p and p.exists():
+                try:
+                    matrix = np.load(str(p))
+                    if matrix.ndim == 2 and matrix.shape[1] == self.dimension and np.all(np.isfinite(matrix)):
+                        norms = np.linalg.norm(matrix, axis=1)
+                        if np.allclose(norms, 1.0, atol=1e-3):
+                            self._embeddings = matrix.astype(np.float32)
+                            self.embeddings_path = p
+                            loaded = True
+                            break
+                except Exception as e:
+                    print(f"[WARN] Failed to load CLIP embeddings from {p}: {e}")
+
+        if self.manifest_path.exists():
             try:
-                matrix = np.load(str(self.embeddings_path))
-                if matrix.ndim == 2 and matrix.shape[1] == self.dimension and np.all(np.isfinite(matrix)):
-                    norms = np.linalg.norm(matrix, axis=1)
-                    if np.allclose(norms, 1.0, atol=1e-3):
-                        self._embeddings = matrix.astype(np.float32)
-                if self.manifest_path.exists():
-                    with open(self.manifest_path, "r", encoding="utf-8") as f:
-                        self._manifest = json.load(f)
-            except Exception as e:
-                print(f"[WARN] Failed to load CLIP embeddings: {e}")
-                self._embeddings = None
+                with open(self.manifest_path, "r", encoding="utf-8") as f:
+                    self._manifest = json.load(f)
+            except Exception:
+                pass
+
+        return loaded
 
     def is_visual_retrieval_ready(self) -> bool:
         """Return True only if verified visual embeddings exist on disk."""
         cat_svc = CatalogService.get_instance()
+        if self._embeddings is None:
+            self.reload_embeddings()
         return (
             self._embeddings is not None and
             len(self._embeddings) == len(cat_svc) and
@@ -113,6 +137,61 @@ class CLIPService:
             "device": self.device,
             "message": "Visual search operational" if ready else "Visual embeddings not yet indexed (offline generation required)"
         }
+
+    @staticmethod
+    def validate_uploaded_image(
+        file_or_bytes: Any,
+        max_bytes: int = 10 * 1024 * 1024,
+        allowed_formats: Tuple[str, ...] = ("JPEG", "JPG", "PNG", "WEBP")
+    ) -> Tuple[bool, Optional[Image.Image], Optional[str]]:
+        """
+        Validate and safely decode an uploaded clothing image.
+        Returns (is_valid, PIL Image in RGB mode, error_message).
+        """
+        if file_or_bytes is None:
+            return False, None, "No image file provided."
+
+        try:
+            # Handle Streamlit UploadedFile, bytes, or file path
+            if hasattr(file_or_bytes, "read"):
+                raw_bytes = file_or_bytes.read()
+                if hasattr(file_or_bytes, "seek"):
+                    file_or_bytes.seek(0)
+            elif isinstance(file_or_bytes, bytes):
+                raw_bytes = file_or_bytes
+            elif isinstance(file_or_bytes, (str, Path)):
+                with open(file_or_bytes, "rb") as f:
+                    raw_bytes = f.read()
+            else:
+                return False, None, f"Unsupported file input type: {type(file_or_bytes)}"
+
+            # 1. File size check
+            if len(raw_bytes) > max_bytes:
+                mb = max_bytes / (1024 * 1024)
+                return False, None, f"Image file exceeds maximum allowed size ({mb:.1f} MB)."
+            if len(raw_bytes) == 0:
+                return False, None, "Uploaded file is empty (0 bytes)."
+
+            # 2. Safe Pillow decode
+            stream = io.BytesIO(raw_bytes)
+            img = Image.open(stream)
+            img.verify()  # Verify image integrity
+
+            # Reopen after verify
+            stream.seek(0)
+            img = Image.open(stream)
+
+            # 3. Format check
+            img_format = (img.format or "").upper()
+            if img_format not in allowed_formats and img_format != "MPO":
+                return False, None, f"Unsupported image format '{img_format}'. Supported formats: {', '.join(allowed_formats)}."
+
+            # Convert to RGB (handles RGBA, Palette, Grayscale)
+            rgb_img = img.convert("RGB")
+            return True, rgb_img, None
+
+        except Exception as e:
+            return False, None, f"Failed to decode image: {str(e)}"
 
     def _get_encoder(self):
         """Lazy model loading with safety guard against simultaneous heavy GPU allocations."""
@@ -151,6 +230,44 @@ class CLIPService:
             vec = vec / norm
         return vec
 
+    def get_visual_similarities(
+        self,
+        query_image: Image.Image,
+        candidate_ids: List[str]
+    ) -> Dict[str, float]:
+        """
+        Calculate cosine visual similarity for a set of candidate product IDs against a query image.
+        Returns a mapping {product_id: visual_similarity_score}.
+        """
+        if not self.is_visual_retrieval_ready():
+            raise RuntimeError("Visual search is not operational. Precomputed CLIP embeddings are missing.")
+
+        cat_svc = CatalogService.get_instance()
+        id_to_idx = {pid: i for i, pid in enumerate(cat_svc.catalog_ids)}
+
+        q_vec = self.encode_image(query_image)
+        results = {}
+
+        valid_indices = []
+        valid_pids = []
+        for pid in candidate_ids:
+            pid_str = str(pid).strip()
+            if pid_str in id_to_idx:
+                valid_indices.append(id_to_idx[pid_str])
+                valid_pids.append(pid_str)
+
+        if not valid_indices:
+            return {}
+
+        sub_matrix = self._embeddings[valid_indices]
+        sims = np.dot(sub_matrix, q_vec)
+
+        for pid_str, s in zip(valid_pids, sims):
+            # Calibrate cosine similarity to [0.0, 1.0] range
+            results[pid_str] = float(max(0.0, min(1.0, float(s))))
+
+        return results
+
     def search_by_image(
         self,
         query_image: Image.Image,
@@ -185,7 +302,7 @@ class CLIPService:
         # Dot product cosine similarity
         sims = np.dot(sub_matrix, q_vec)
 
-        # Sort descending by visual similarity
+        # Sort descending by visual similarity with deterministic tie-breaking
         items = [
             (float(sims[i]), sub_ids[i])
             for i in range(len(sub_ids))
@@ -198,6 +315,7 @@ class CLIPService:
             if prod:
                 rec = dict(prod)
                 rec["visual_similarity"] = float(score)
+                rec["score"] = float(score)
                 results.append(rec)
 
         return results

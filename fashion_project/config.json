@@ -54,7 +54,24 @@
     "retry_limit": 1
   },
   "personalization": {
-    "ranking_formula": "score = 0.8 * cosine(q, item_vector) + 0.2 * cosine(u, item_vector)",
+    "ranking_formula": "score = Wt * cosine(q_text, v_text) + Wv * cosine(q_img, v_img) + Wp * cosine(u, v_text)",
+    "baseline_weights": {
+      "query_weight": 0.8,
+      "profile_weight": 0.2
+    },
+    "hybrid_weights": {
+      "text_weight": 0.5,
+      "visual_weight": 0.3,
+      "preference_weight": 0.2
+    },
+    "image_only_weights": {
+      "visual_weight": 0.8,
+      "preference_weight": 0.2
+    },
+    "text_only_weights": {
+      "text_weight": 0.8,
+      "preference_weight": 0.2
+    },
     "query_weight": 0.8,
     "profile_weight": 0.2,
     "top_k": 5,
@@ -63,7 +80,9 @@
       "baseColour",
       "usage",
       "masterCategory",
+      "subCategory",
       "gender",
+      "season",
       "exclude_colors"
     ]
   }

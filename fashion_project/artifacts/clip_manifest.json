@@ -1,0 +1,26 @@
+{
+  "model_identifier": "sentence-transformers/clip-ViT-B-32",
+  "model_revision": "main",
+  "vector_dimensions": 512,
+  "embedding_count": 10000,
+  "image_preprocessing_config": {
+    "target_size": [
+      224,
+      224
+    ],
+    "resampling": "LANCZOS",
+    "channels": 3,
+    "color_space": "RGB",
+    "normalized": true
+  },
+  "catalog_hash": "5debaa73b83f50f6e072dcf3ec262c2f32ea7e6c30e79d4a9ef4f318c7eab032",
+  "product_id_ordering_hash": "d2adae7bbb5b30fa06b3a0293dac18ff1367872451ddb8bb3ae06c28c0114f3f",
+  "generation_date": "2026-11-08T08:49:09.345249+00:00",
+  "device_used": "cpu",
+  "batch_size": 128,
+  "failed_image_count": 0,
+  "failed_image_ids": [],
+  "sha256": "a50fc11d4fb9783e2f82c4b5f3b6a6548fce80df57fd1fec2aa48021b76f8447",
+  "file_size_mb": 19.53,
+  "source_catalog": "C:\\Users\\eswar\\OneDrive\\Desktop\\llm-fashion\\fashion_project\\artifacts\\catalog.csv"
+}

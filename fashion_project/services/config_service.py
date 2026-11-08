@@ -144,6 +144,14 @@ class ConfigService:
     def config(self) -> Dict[str, Any]:
         return self._config
 
+    @property
+    def project_root(self) -> Path:
+        return PROJECT_ROOT
+
+    @property
+    def artifacts_dir(self) -> Path:
+        return PROJECT_ROOT / "artifacts"
+
     def get_path(self, key: str) -> Path:
         """Resolve a path configured under 'paths' or 'dataset'."""
         paths_section = self._config.get("paths", {})

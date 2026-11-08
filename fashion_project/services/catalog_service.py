@@ -127,5 +127,15 @@ class CatalogService:
     def get_genders(self) -> List[str]:
         return self.get_unique_values("gender")
 
+    def get_subcategories(self, master_category: Optional[str] = None) -> List[str]:
+        if master_category:
+            sub = self._catalog_df[self._catalog_df["masterCategory"] == master_category]
+            vals = sub["subCategory"].dropna().astype(str).str.strip().unique()
+            return sorted([v for v in vals if v and v.lower() not in ("nan", "none")])
+        return self.get_unique_values("subCategory")
+
+    def get_seasons(self) -> List[str]:
+        return self.get_unique_values("season")
+
     def get_usages(self) -> List[str]:
         return self.get_unique_values("usage")
