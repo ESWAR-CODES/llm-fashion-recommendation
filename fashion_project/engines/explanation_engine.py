@@ -160,7 +160,8 @@ def validate_explanation(
     common_usages = ["casual", "formal", "sports", "ethnic", "party", "smart casual"]
     for usg in common_usages:
         if re.search(rf'\b{usg}\b', text_lower):
-            if usg not in recorded_usage and usg not in recorded_name:
+            # Check if usage token is grounded in recorded usage, title, or articleType (e.g. "Casual Shoes")
+            if usg not in recorded_usage and usg not in recorded_name and usg not in recorded_type:
                 return False, f"Ungrounded usage mention: '{usg}' does not match product usage '{product.get('usage')}'"
 
     return True, None

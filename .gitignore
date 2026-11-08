@@ -18,10 +18,16 @@ kaggle.json
 *.pem
 *.key
 
-# Raw dataset - do not upload
+# Raw dataset - do not upload large raw archives
 data/raw/
 **/data/raw/
 *.zip
+
+# Runtime and temporary databases & snapshots containing user profile data
+*.sqlite
+*.sqlite3
+*.sqlite-wal
+*.sqlite-shm
 
 # Runtime and temporary files
 logs/*
@@ -42,6 +48,7 @@ backups/*
 *.ckpt
 *.safetensors
 *.bin
+.cache/
 
 # OS files
 .DS_Store

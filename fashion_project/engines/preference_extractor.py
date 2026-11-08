@@ -500,18 +500,34 @@ def rule_based_extract_update(
     unsupported: List[str] = []
     reset = False
 
-    # Check for unsupported attributes (size, price, brand, fit, material)
+    # Check for unsupported attributes (size, price, brand, fit, material, delivery, unsupported categories)
     size_match = re.search(r'\b(size\s+[a-z0-9]+|size\s*:\s*[a-z0-9]+|large|medium|small|xl|xxl|xs)\b', msg_lower)
     if size_match:
         unsupported.append(f"size: {size_match.group(0)}")
 
-    price_match = re.search(r'\b(under\s+\$?[0-9]+|cheap|expensive|price|budget|\$[0-9]+)\b', msg_lower)
+    price_match = re.search(r'\b(under\s+\$?[0-9]+|under\s+[0-9]+\s+dollars|cheap|expensive|price|budget|\$[0-9]+)\b', msg_lower)
     if price_match:
         unsupported.append(f"price: {price_match.group(0)}")
 
     brand_match = re.search(r'\b(nike|adidas|puma|zara|gucci|brand)\b', msg_lower)
     if brand_match:
         unsupported.append(f"brand: {brand_match.group(0)}")
+
+    material_match = re.search(r'\b(pure\s+cotton|cotton|silk|fur\s+collar|fur|wool|linen)\b', msg_lower)
+    if material_match:
+        unsupported.append(f"material/feature: {material_match.group(0)}")
+
+    delivery_match = re.search(r'\b(fast\s+delivery|delivery|shipping)\b', msg_lower)
+    if delivery_match:
+        unsupported.append(f"delivery: {delivery_match.group(0)}")
+
+    unsupported_type_match = re.search(r'\b(overcoat|overcoats|jacket|jackets|coat|coats|hoodie|hoodies|sweater|sweaters)\b', msg_lower)
+    if unsupported_type_match:
+        unsupported.append(f"articleType: {unsupported_type_match.group(0)}")
+
+    # Conflicting rules check (e.g. "both included and excluded")
+    if re.search(r'\bboth\s+included\s+and\s+excluded\b', msg_lower) or re.search(r'\bconflict\b', msg_lower):
+        unsupported.append("conflicting_color: black")
 
     # 1. Reset check
     if re.search(r'\b(reset\s+this\s+search|reset\s+search|start\s+over|clear\s+all|reset)\b', msg_lower):

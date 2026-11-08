@@ -1,0 +1,171 @@
+[
+  {
+    "id": "dev_01",
+    "query": "Show me casual shirts in navy blue",
+    "group": "development",
+    "expected_constraints": {
+      "articleType": ["Shirts"],
+      "baseColour": ["Navy Blue"],
+      "usage": ["Casual"]
+    },
+    "expected_unsupported": [],
+    "expected_reset": false,
+    "profile_id": "prof_dev_1",
+    "profile_preferences": {
+      "preferred_categories": ["Apparel"],
+      "preferred_colors": ["Navy Blue", "Black"]
+    },
+    "liked_ids": ["10051"]
+  },
+  {
+    "id": "dev_02",
+    "query": "Looking for black formal shoes",
+    "group": "development",
+    "expected_constraints": {
+      "articleType": ["Formal Shoes"],
+      "baseColour": ["Black"],
+      "usage": ["Formal"]
+    },
+    "expected_unsupported": [],
+    "expected_reset": false,
+    "profile_id": "prof_dev_2",
+    "profile_preferences": {
+      "preferred_categories": ["Footwear"],
+      "preferred_colors": ["Black", "Brown"]
+    },
+    "liked_ids": ["10128"]
+  },
+  {
+    "id": "dev_03",
+    "query": "White casual shoes for daily wear",
+    "group": "development",
+    "expected_constraints": {
+      "articleType": ["Casual Shoes"],
+      "baseColour": ["White"],
+      "usage": ["Casual"]
+    },
+    "expected_unsupported": [],
+    "expected_reset": false,
+    "profile_id": "prof_dev_1",
+    "profile_preferences": {
+      "preferred_categories": ["Footwear"],
+      "preferred_colors": ["White"]
+    },
+    "liked_ids": ["11816"]
+  },
+  {
+    "id": "dev_04",
+    "query": "Casual t-shirts but avoid red",
+    "group": "development",
+    "expected_constraints": {
+      "articleType": ["Tshirts"],
+      "usage": ["Casual"],
+      "exclude_colors": ["Red"]
+    },
+    "expected_unsupported": [],
+    "expected_reset": false,
+    "profile_id": "prof_dev_3",
+    "profile_preferences": {
+      "preferred_categories": ["Apparel"],
+      "preferred_colors": ["Blue", "Grey"]
+    },
+    "liked_ids": []
+  },
+  {
+    "id": "dev_05",
+    "query": "Black instead",
+    "group": "development",
+    "prior_constraints": {
+      "articleType": ["Shirts"],
+      "baseColour": ["Navy Blue"],
+      "usage": ["Casual"]
+    },
+    "expected_constraints": {
+      "articleType": ["Shirts"],
+      "baseColour": ["Black"],
+      "usage": ["Casual"]
+    },
+    "expected_unsupported": [],
+    "expected_reset": false,
+    "profile_id": "prof_dev_1",
+    "profile_preferences": {},
+    "liked_ids": []
+  },
+  {
+    "id": "dev_06",
+    "query": "Any color shirts",
+    "group": "development",
+    "prior_constraints": {
+      "articleType": ["Shirts"],
+      "baseColour": ["Black"],
+      "exclude_colors": ["Red"]
+    },
+    "expected_constraints": {
+      "articleType": ["Shirts"]
+    },
+    "expected_unsupported": [],
+    "expected_reset": false,
+    "profile_id": "prof_dev_1",
+    "profile_preferences": {},
+    "liked_ids": []
+  },
+  {
+    "id": "dev_07",
+    "query": "Formal trousers in black or grey",
+    "group": "development",
+    "expected_constraints": {
+      "articleType": ["Trousers"],
+      "baseColour": ["Black", "Grey"],
+      "usage": ["Formal"]
+    },
+    "expected_unsupported": [],
+    "expected_reset": false,
+    "profile_id": "prof_dev_2",
+    "profile_preferences": {},
+    "liked_ids": []
+  },
+  {
+    "id": "dev_08",
+    "query": "Casual jeans in blue",
+    "group": "development",
+    "expected_constraints": {
+      "articleType": ["Jeans"],
+      "baseColour": ["Blue"],
+      "usage": ["Casual"]
+    },
+    "expected_unsupported": [],
+    "expected_reset": false,
+    "profile_id": "prof_dev_3",
+    "profile_preferences": {},
+    "liked_ids": []
+  },
+  {
+    "id": "dev_09",
+    "query": "Sports shoes in size 10 under $60",
+    "group": "development",
+    "expected_constraints": {
+      "articleType": ["Sports Shoes"],
+      "usage": ["Sports"]
+    },
+    "expected_unsupported": ["size: 10", "price: under $60"],
+    "expected_reset": false,
+    "profile_id": "prof_dev_4",
+    "profile_preferences": {},
+    "liked_ids": []
+  },
+  {
+    "id": "dev_10",
+    "query": "Clear all filters",
+    "group": "development",
+    "prior_constraints": {
+      "articleType": ["Shirts"],
+      "baseColour": ["Black"]
+    },
+    "expected_constraints": {},
+    "expected_unsupported": [],
+    "expected_reset": true,
+    "profile_id": "prof_dev_1",
+    "profile_preferences": {},
+    "liked_ids": []
+  }
+]

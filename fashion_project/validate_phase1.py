@@ -23,6 +23,8 @@ def compute_sha256(filepath: str) -> str:
 
 def run_all_checks(project_root: str = "fashion_project"):
     root = Path(project_root)
+    if not root.exists():
+        root = Path(".")
     artifacts_dir = root / "artifacts"
     raw_dir = root / "data" / "raw"
     styles_csv = raw_dir / "styles.csv"

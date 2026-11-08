@@ -1,0 +1,625 @@
+[
+  {
+    "id": "test_01",
+    "group": "direct",
+    "query": "Show me navy blue shirts for casual wear",
+    "expected_constraints": {
+      "articleType": ["Shirts"],
+      "baseColour": ["Navy Blue"],
+      "usage": ["Casual"]
+    },
+    "expected_unsupported": [],
+    "expected_reset": false,
+    "profile_id": "eval_usr_1",
+    "profile_preferences": {"preferred_categories": ["Apparel"], "preferred_colors": ["Navy Blue"]},
+    "liked_ids": ["10051"]
+  },
+  {
+    "id": "test_02",
+    "group": "direct",
+    "query": "I need black formal shoes",
+    "expected_constraints": {
+      "articleType": ["Formal Shoes"],
+      "baseColour": ["Black"],
+      "usage": ["Formal"]
+    },
+    "expected_unsupported": [],
+    "expected_reset": false,
+    "profile_id": "eval_usr_2",
+    "profile_preferences": {"preferred_categories": ["Footwear"], "preferred_colors": ["Black"]},
+    "liked_ids": ["10128"]
+  },
+  {
+    "id": "test_03",
+    "group": "direct",
+    "query": "Find white casual shoes",
+    "expected_constraints": {
+      "articleType": ["Casual Shoes"],
+      "baseColour": ["White"],
+      "usage": ["Casual"]
+    },
+    "expected_unsupported": [],
+    "expected_reset": false,
+    "profile_id": "eval_usr_3",
+    "profile_preferences": {"preferred_categories": ["Footwear"], "preferred_colors": ["White"]},
+    "liked_ids": ["11816"]
+  },
+  {
+    "id": "test_04",
+    "group": "direct",
+    "query": "Looking for black formal trousers",
+    "expected_constraints": {
+      "articleType": ["Trousers"],
+      "baseColour": ["Black"],
+      "usage": ["Formal"]
+    },
+    "expected_unsupported": [],
+    "expected_reset": false,
+    "profile_id": "eval_usr_2",
+    "profile_preferences": {"preferred_categories": ["Apparel"], "preferred_colors": ["Black"]},
+    "liked_ids": []
+  },
+  {
+    "id": "test_05",
+    "group": "direct",
+    "query": "Blue casual jeans",
+    "expected_constraints": {
+      "articleType": ["Jeans"],
+      "baseColour": ["Blue"],
+      "usage": ["Casual"]
+    },
+    "expected_unsupported": [],
+    "expected_reset": false,
+    "profile_id": "eval_usr_4",
+    "profile_preferences": {"preferred_categories": ["Apparel"], "preferred_colors": ["Blue"]},
+    "liked_ids": []
+  },
+  {
+    "id": "test_06",
+    "group": "direct",
+    "query": "Red casual t-shirts",
+    "expected_constraints": {
+      "articleType": ["Tshirts"],
+      "baseColour": ["Red"],
+      "usage": ["Casual"]
+    },
+    "expected_unsupported": [],
+    "expected_reset": false,
+    "profile_id": "eval_usr_5",
+    "profile_preferences": {"preferred_categories": ["Apparel"], "preferred_colors": ["Red"]},
+    "liked_ids": []
+  },
+  {
+    "id": "test_07",
+    "group": "direct",
+    "query": "Grey sports shoes for athletic training",
+    "expected_constraints": {
+      "articleType": ["Sports Shoes"],
+      "baseColour": ["Grey"],
+      "usage": ["Sports"]
+    },
+    "expected_unsupported": [],
+    "expected_reset": false,
+    "profile_id": "eval_usr_6",
+    "profile_preferences": {"preferred_categories": ["Footwear"], "preferred_colors": ["Grey"]},
+    "liked_ids": []
+  },
+  {
+    "id": "test_08",
+    "group": "direct",
+    "query": "Ethnic kurtas in yellow",
+    "expected_constraints": {
+      "articleType": ["Kurtas"],
+      "baseColour": ["Yellow"],
+      "usage": ["Ethnic"]
+    },
+    "expected_unsupported": [],
+    "expected_reset": false,
+    "profile_id": "eval_usr_7",
+    "profile_preferences": {"preferred_categories": ["Apparel"], "preferred_colors": ["Yellow"]},
+    "liked_ids": []
+  },
+  {
+    "id": "test_09",
+    "group": "direct",
+    "query": "Brown casual sandals",
+    "expected_constraints": {
+      "articleType": ["Sandals"],
+      "baseColour": ["Brown"],
+      "usage": ["Casual"]
+    },
+    "expected_unsupported": [],
+    "expected_reset": false,
+    "profile_id": "eval_usr_8",
+    "profile_preferences": {"preferred_categories": ["Footwear"], "preferred_colors": ["Brown"]},
+    "liked_ids": []
+  },
+  {
+    "id": "test_10",
+    "group": "direct",
+    "query": "Green casual shorts",
+    "expected_constraints": {
+      "articleType": ["Shorts"],
+      "baseColour": ["Green"],
+      "usage": ["Casual"]
+    },
+    "expected_unsupported": [],
+    "expected_reset": false,
+    "profile_id": "eval_usr_9",
+    "profile_preferences": {"preferred_categories": ["Apparel"], "preferred_colors": ["Green"]},
+    "liked_ids": []
+  },
+  {
+    "id": "test_11",
+    "group": "exclusions_and_corrections",
+    "query": "Casual shirts but avoid red",
+    "expected_constraints": {
+      "articleType": ["Shirts"],
+      "usage": ["Casual"],
+      "exclude_colors": ["Red"]
+    },
+    "expected_unsupported": [],
+    "expected_reset": false,
+    "profile_id": "eval_usr_1",
+    "profile_preferences": {"preferred_categories": ["Apparel"], "preferred_colors": ["Navy Blue"]},
+    "liked_ids": ["10051"]
+  },
+  {
+    "id": "test_12",
+    "group": "exclusions_and_corrections",
+    "query": "Black formal shoes without brown",
+    "expected_constraints": {
+      "articleType": ["Formal Shoes"],
+      "baseColour": ["Black"],
+      "usage": ["Formal"],
+      "exclude_colors": ["Brown"]
+    },
+    "expected_unsupported": [],
+    "expected_reset": false,
+    "profile_id": "eval_usr_2",
+    "profile_preferences": {"preferred_categories": ["Footwear"], "preferred_colors": ["Black"]},
+    "liked_ids": ["10128"]
+  },
+  {
+    "id": "test_13",
+    "group": "exclusions_and_corrections",
+    "query": "White instead",
+    "prior_constraints": {
+      "articleType": ["Casual Shoes"],
+      "baseColour": ["Black"],
+      "usage": ["Casual"]
+    },
+    "expected_constraints": {
+      "articleType": ["Casual Shoes"],
+      "baseColour": ["White"],
+      "usage": ["Casual"]
+    },
+    "expected_unsupported": [],
+    "expected_reset": false,
+    "profile_id": "eval_usr_3",
+    "profile_preferences": {"preferred_categories": ["Footwear"], "preferred_colors": ["White"]},
+    "liked_ids": ["11816"]
+  },
+  {
+    "id": "test_14",
+    "group": "exclusions_and_corrections",
+    "query": "Any color shirts",
+    "prior_constraints": {
+      "articleType": ["Shirts"],
+      "baseColour": ["Navy Blue"],
+      "exclude_colors": ["Red"],
+      "usage": ["Casual"]
+    },
+    "expected_constraints": {
+      "articleType": ["Shirts"],
+      "usage": ["Casual"]
+    },
+    "expected_unsupported": [],
+    "expected_reset": false,
+    "profile_id": "eval_usr_1",
+    "profile_preferences": {},
+    "liked_ids": []
+  },
+  {
+    "id": "test_15",
+    "group": "exclusions_and_corrections",
+    "query": "Casual t-shirts excluding black and yellow",
+    "expected_constraints": {
+      "articleType": ["Tshirts"],
+      "usage": ["Casual"],
+      "exclude_colors": ["Black", "Yellow"]
+    },
+    "expected_unsupported": [],
+    "expected_reset": false,
+    "profile_id": "eval_usr_5",
+    "profile_preferences": {},
+    "liked_ids": []
+  },
+  {
+    "id": "test_16",
+    "group": "exclusions_and_corrections",
+    "query": "Actually make them formal shirts",
+    "prior_constraints": {
+      "articleType": ["Shirts"],
+      "baseColour": ["White"],
+      "usage": ["Casual"]
+    },
+    "expected_constraints": {
+      "articleType": ["Shirts"],
+      "baseColour": ["White"],
+      "usage": ["Formal"]
+    },
+    "expected_unsupported": [],
+    "expected_reset": false,
+    "profile_id": "eval_usr_1",
+    "profile_preferences": {},
+    "liked_ids": []
+  },
+  {
+    "id": "test_17",
+    "group": "exclusions_and_corrections",
+    "query": "Sports shoes without white",
+    "expected_constraints": {
+      "articleType": ["Sports Shoes"],
+      "usage": ["Sports"],
+      "exclude_colors": ["White"]
+    },
+    "expected_unsupported": [],
+    "expected_reset": false,
+    "profile_id": "eval_usr_6",
+    "profile_preferences": {},
+    "liked_ids": []
+  },
+  {
+    "id": "test_18",
+    "group": "exclusions_and_corrections",
+    "query": "Change category to Trousers",
+    "prior_constraints": {
+      "articleType": ["Jeans"],
+      "baseColour": ["Blue"],
+      "usage": ["Casual"]
+    },
+    "expected_constraints": {
+      "articleType": ["Trousers"],
+      "baseColour": ["Blue"],
+      "usage": ["Casual"]
+    },
+    "expected_unsupported": [],
+    "expected_reset": false,
+    "profile_id": "eval_usr_4",
+    "profile_preferences": {},
+    "liked_ids": []
+  },
+  {
+    "id": "test_19",
+    "group": "exclusions_and_corrections",
+    "query": "Formal shoes but do not show brown",
+    "expected_constraints": {
+      "articleType": ["Formal Shoes"],
+      "usage": ["Formal"],
+      "exclude_colors": ["Brown"]
+    },
+    "expected_unsupported": [],
+    "expected_reset": false,
+    "profile_id": "eval_usr_2",
+    "profile_preferences": {},
+    "liked_ids": []
+  },
+  {
+    "id": "test_20",
+    "group": "exclusions_and_corrections",
+    "query": "Ethnic kurtas avoiding green",
+    "expected_constraints": {
+      "articleType": ["Kurtas"],
+      "usage": ["Ethnic"],
+      "exclude_colors": ["Green"]
+    },
+    "expected_unsupported": [],
+    "expected_reset": false,
+    "profile_id": "eval_usr_7",
+    "profile_preferences": {},
+    "liked_ids": []
+  },
+  {
+    "id": "test_21",
+    "group": "paraphrases",
+    "query": "Navy blue topwear for casual everyday outings",
+    "expected_constraints": {
+      "articleType": ["Shirts"],
+      "baseColour": ["Navy Blue"],
+      "usage": ["Casual"]
+    },
+    "expected_unsupported": [],
+    "expected_reset": false,
+    "profile_id": "eval_usr_1",
+    "profile_preferences": {"preferred_categories": ["Apparel"], "preferred_colors": ["Navy Blue"]},
+    "liked_ids": ["10051"]
+  },
+  {
+    "id": "test_22",
+    "group": "paraphrases",
+    "query": "Black office wear formal footwear",
+    "expected_constraints": {
+      "articleType": ["Formal Shoes"],
+      "baseColour": ["Black"],
+      "usage": ["Formal"]
+    },
+    "expected_unsupported": [],
+    "expected_reset": false,
+    "profile_id": "eval_usr_2",
+    "profile_preferences": {"preferred_categories": ["Footwear"], "preferred_colors": ["Black"]},
+    "liked_ids": ["10128"]
+  },
+  {
+    "id": "test_23",
+    "group": "paraphrases",
+    "query": "Everyday white sneakers",
+    "expected_constraints": {
+      "articleType": ["Casual Shoes"],
+      "baseColour": ["White"],
+      "usage": ["Casual"]
+    },
+    "expected_unsupported": [],
+    "expected_reset": false,
+    "profile_id": "eval_usr_3",
+    "profile_preferences": {"preferred_categories": ["Footwear"], "preferred_colors": ["White"]},
+    "liked_ids": ["11816"]
+  },
+  {
+    "id": "test_24",
+    "group": "paraphrases",
+    "query": "Business attire formal slacks in dark black",
+    "expected_constraints": {
+      "articleType": ["Trousers"],
+      "baseColour": ["Black"],
+      "usage": ["Formal"]
+    },
+    "expected_unsupported": [],
+    "expected_reset": false,
+    "profile_id": "eval_usr_2",
+    "profile_preferences": {},
+    "liked_ids": []
+  },
+  {
+    "id": "test_25",
+    "group": "paraphrases",
+    "query": "Blue denim pants for relaxing",
+    "expected_constraints": {
+      "articleType": ["Jeans"],
+      "baseColour": ["Blue"],
+      "usage": ["Casual"]
+    },
+    "expected_unsupported": [],
+    "expected_reset": false,
+    "profile_id": "eval_usr_4",
+    "profile_preferences": {},
+    "liked_ids": []
+  },
+  {
+    "id": "test_26",
+    "group": "paraphrases",
+    "query": "Casual short sleeve tee in red",
+    "expected_constraints": {
+      "articleType": ["Tshirts"],
+      "baseColour": ["Red"],
+      "usage": ["Casual"]
+    },
+    "expected_unsupported": [],
+    "expected_reset": false,
+    "profile_id": "eval_usr_5",
+    "profile_preferences": {},
+    "liked_ids": []
+  },
+  {
+    "id": "test_27",
+    "group": "paraphrases",
+    "query": "Gym and jogging trainers in grey",
+    "expected_constraints": {
+      "articleType": ["Sports Shoes"],
+      "baseColour": ["Grey"],
+      "usage": ["Sports"]
+    },
+    "expected_unsupported": [],
+    "expected_reset": false,
+    "profile_id": "eval_usr_6",
+    "profile_preferences": {},
+    "liked_ids": []
+  },
+  {
+    "id": "test_28",
+    "group": "paraphrases",
+    "query": "Traditional festival yellow kurta",
+    "expected_constraints": {
+      "articleType": ["Kurtas"],
+      "baseColour": ["Yellow"],
+      "usage": ["Ethnic"]
+    },
+    "expected_unsupported": [],
+    "expected_reset": false,
+    "profile_id": "eval_usr_7",
+    "profile_preferences": {},
+    "liked_ids": []
+  },
+  {
+    "id": "test_29",
+    "group": "paraphrases",
+    "query": "Open toe casual footwear in brown leather tone",
+    "expected_constraints": {
+      "articleType": ["Sandals"],
+      "baseColour": ["Brown"],
+      "usage": ["Casual"]
+    },
+    "expected_unsupported": [],
+    "expected_reset": false,
+    "profile_id": "eval_usr_8",
+    "profile_preferences": {},
+    "liked_ids": []
+  },
+  {
+    "id": "test_30",
+    "group": "paraphrases",
+    "query": "Green bermuda shorts for summer weekends",
+    "expected_constraints": {
+      "articleType": ["Shorts"],
+      "baseColour": ["Green"],
+      "usage": ["Casual"]
+    },
+    "expected_unsupported": [],
+    "expected_reset": false,
+    "profile_id": "eval_usr_9",
+    "profile_preferences": {},
+    "liked_ids": []
+  },
+  {
+    "id": "test_31",
+    "group": "edge_cases",
+    "query": "Reset everything and start over",
+    "prior_constraints": {
+      "articleType": ["Shirts"],
+      "baseColour": ["Navy Blue"],
+      "usage": ["Casual"]
+    },
+    "expected_constraints": {},
+    "expected_unsupported": [],
+    "expected_reset": true,
+    "profile_id": "eval_usr_1",
+    "profile_preferences": {},
+    "liked_ids": []
+  },
+  {
+    "id": "test_32",
+    "group": "edge_cases",
+    "query": "I want pure cotton shirts under 50 dollars",
+    "expected_constraints": {
+      "articleType": ["Shirts"]
+    },
+    "expected_unsupported": ["fabric: pure cotton", "price: under 50 dollars"],
+    "expected_reset": false,
+    "profile_id": "eval_usr_1",
+    "profile_preferences": {},
+    "liked_ids": []
+  },
+  {
+    "id": "test_33",
+    "group": "edge_cases",
+    "query": "Casual shoes in size 11 with fast delivery",
+    "expected_constraints": {
+      "articleType": ["Casual Shoes"],
+      "usage": ["Casual"]
+    },
+    "expected_unsupported": ["size: 11", "delivery: fast delivery"],
+    "expected_reset": false,
+    "profile_id": "eval_usr_3",
+    "profile_preferences": {},
+    "liked_ids": []
+  },
+  {
+    "id": "test_34",
+    "group": "edge_cases",
+    "query": "Nike brand black sports shoes",
+    "expected_constraints": {
+      "articleType": ["Sports Shoes"],
+      "baseColour": ["Black"],
+      "usage": ["Sports"]
+    },
+    "expected_unsupported": ["brand: nike"],
+    "expected_reset": false,
+    "profile_id": "eval_usr_6",
+    "profile_preferences": {},
+    "liked_ids": []
+  },
+  {
+    "id": "test_35",
+    "group": "edge_cases",
+    "query": "Formal flip flops in black",
+    "expected_constraints": {
+      "articleType": ["Flip Flops"],
+      "baseColour": ["Black"],
+      "usage": ["Formal"]
+    },
+    "expected_unsupported": [],
+    "expected_reset": false,
+    "profile_id": "eval_usr_10",
+    "profile_preferences": {},
+    "liked_ids": []
+  },
+  {
+    "id": "test_36",
+    "group": "edge_cases",
+    "query": "Clear the color filter",
+    "prior_constraints": {
+      "articleType": ["Shirts"],
+      "baseColour": ["Navy Blue"],
+      "exclude_colors": ["Red"],
+      "usage": ["Casual"]
+    },
+    "expected_constraints": {
+      "articleType": ["Shirts"],
+      "usage": ["Casual"]
+    },
+    "expected_unsupported": [],
+    "expected_reset": false,
+    "profile_id": "eval_usr_1",
+    "profile_preferences": {},
+    "liked_ids": []
+  },
+  {
+    "id": "test_37",
+    "group": "edge_cases",
+    "query": "Neon pink formal shoes",
+    "expected_constraints": {
+      "articleType": ["Formal Shoes"],
+      "baseColour": ["Pink"],
+      "usage": ["Formal"]
+    },
+    "expected_unsupported": [],
+    "expected_reset": false,
+    "profile_id": "eval_usr_2",
+    "profile_preferences": {},
+    "liked_ids": []
+  },
+  {
+    "id": "test_38",
+    "group": "edge_cases",
+    "query": "Heavy winter overcoats with fur collar",
+    "expected_constraints": {},
+    "expected_unsupported": ["articleType: overcoats", "feature: fur collar"],
+    "expected_reset": false,
+    "profile_id": "eval_usr_1",
+    "profile_preferences": {},
+    "liked_ids": []
+  },
+  {
+    "id": "test_39",
+    "group": "edge_cases",
+    "query": "Party wear high heels in silver",
+    "expected_constraints": {
+      "articleType": ["Heels"],
+      "baseColour": ["Silver"],
+      "usage": ["Party"]
+    },
+    "expected_unsupported": [],
+    "expected_reset": false,
+    "profile_id": "eval_usr_10",
+    "profile_preferences": {},
+    "liked_ids": []
+  },
+  {
+    "id": "test_40",
+    "group": "edge_cases",
+    "query": "Black both included and excluded color",
+    "prior_constraints": {
+      "articleType": ["Shirts"],
+      "baseColour": ["Black"]
+    },
+    "expected_constraints": {
+      "articleType": ["Shirts"],
+      "baseColour": ["Black"]
+    },
+    "expected_unsupported": ["conflicting_color: black"],
+    "expected_reset": false,
+    "profile_id": "eval_usr_1",
+    "profile_preferences": {},
+    "liked_ids": []
+  }
+]

@@ -1,0 +1,91 @@
+{
+  "evaluation_dataset": {
+    "total_requests": 40,
+    "groups": {
+      "direct": 10,
+      "exclusions_and_corrections": 10,
+      "paraphrases": 10,
+      "edge_cases": 10
+    },
+    "source_test_file": "C:\\Users\\eswar\\OneDrive\\Desktop\\llm-fashion\\fashion_project\\evaluation\\test_requests.json"
+  },
+  "evaluation_methodology": {
+    "protocol_type": "Automated offline benchmark & blinded human evaluation protocol template",
+    "human_judgments_collected": false,
+    "human_volunteer_count": 0,
+    "automated_constraint_satisfaction_evaluated": true,
+    "onboarding_likes_excluded_from_candidates": true,
+    "previously_judged_items_excluded_from_candidates": true
+  },
+  "execution_environment": {
+    "hardware": "Windows 11 CPU (Intel/AMD)",
+    "pytorch_version": "2.15.0+cpu",
+    "cuda_available": false,
+    "qwen_inference_mode": "deterministic_cpu_fallback",
+    "note": "Full Qwen2.5-3B-Instruct autoregressive generation requires Google Colab T4 GPU (15 GB VRAM) as documented in End_to_End_PipeLine.pdf. Local CPU execution operates in deterministic rule/template fallback mode."
+  },
+  "extraction_metrics": {
+    "exact_match_accuracy_pct": 42.5,
+    "exact_matches_count": 17,
+    "valid_json_rate_pct": 100.0,
+    "unsupported_field_accuracy_pct": 100.0
+  },
+  "constraint_satisfaction": {
+    "target": 0.0,
+    "violations_count": {
+      "A": 0,
+      "B": 0,
+      "C": 0,
+      "D": 0
+    },
+    "returned_items_count": {
+      "A": 174,
+      "B": 174,
+      "C": 174,
+      "D": 174
+    },
+    "violation_rates_pct": {
+      "System A (Keyword)": 0.0,
+      "System B (Semantic)": 0.0,
+      "System C (Personalized)": 0.0,
+      "System D (Complete Pipeline)": 0.0
+    }
+  },
+  "relevance_precision_at_5": {
+    "metric_description": "Constraint-compliant relevance precision (automated heuristic matching requested categories, colors, usages while excluding onboarding likes)",
+    "System A (Keyword)": 100.0,
+    "System B (Semantic)": 100.0,
+    "System C (Personalized)": 100.0,
+    "System D (Complete Pipeline)": 100.0
+  },
+  "explanation_quality": {
+    "total_explanations_inspected": 174,
+    "factual_errors_detected": 0,
+    "explanation_error_rate_pct": 0.0,
+    "grounding_compliance_pct": 100.0
+  },
+  "latency_ms": {
+    "initialization_ms": {
+      "embedding_model_load_ms": 13918.47
+    },
+    "warm_request_latency_ms": {
+      "System A (Keyword)": {
+        "median_ms": 36.41,
+        "p95_ms": 202.06
+      },
+      "System B (Semantic)": {
+        "median_ms": 26.86,
+        "p95_ms": 44.06
+      },
+      "System C (Personalized)": {
+        "median_ms": 29.73,
+        "p95_ms": 42.49
+      },
+      "System D (Complete Pipeline - CPU Fallback)": {
+        "median_ms": 27.13,
+        "p95_ms": 36.57
+      }
+    }
+  },
+  "timestamp": "2026-11-08T02:54:42Z"
+}

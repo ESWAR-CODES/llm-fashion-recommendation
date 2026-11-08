@@ -30,6 +30,8 @@ from embedding_engine import (
 
 def run_all_checks(project_root: str = "fashion_project") -> Dict[str, Tuple[str, str]]:
     root = Path(project_root)
+    if not root.exists():
+        root = Path(".")
     artifacts_dir = root / "artifacts"
     catalog_path = artifacts_dir / "catalog.csv"
     catalog_ids_path = artifacts_dir / "catalog_ids.json"
