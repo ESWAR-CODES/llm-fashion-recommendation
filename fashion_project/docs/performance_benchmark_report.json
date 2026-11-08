@@ -1,0 +1,41 @@
+{
+  "timestamp": "2026-11-08 14:45:09",
+  "platform": "win32",
+  "python_version": "3.14.0",
+  "hardware": {
+    "platform": "win32",
+    "python_version": "3.14.0",
+    "cuda_available": false,
+    "device_name": "CPU",
+    "vram_gb": 0.0,
+    "system_ram_gb": 15.82,
+    "system_ram_available_gb": 6.31,
+    "disk_free_gb": 92.43,
+    "project_root": "C:\\Users\\eswar\\OneDrive\\Desktop\\llm-fashion\\fashion_project"
+  },
+  "memory": {
+    "initial_rss_mb": 90.88,
+    "catalog_rss_mb": 110.54,
+    "embedding_rss_mb": 292.96,
+    "clip_rss_mb": 312.57,
+    "loaded_services_rss_mb": 313.75,
+    "memory_growth_mb": 222.87
+  },
+  "latency_ms": {
+    "catalog_load": 1347.79,
+    "minilm_load": 3701.35,
+    "clip_load": 32.43,
+    "total_startup": 5087.7,
+    "text_encoding_avg": 14.09,
+    "text_encoding_p95": 19.31,
+    "text_search_10k_avg": 0.53,
+    "text_search_10k_p95": 0.81,
+    "visual_search_10k_avg": 0.69,
+    "visual_search_10k_p95": 0.91,
+    "end_to_end_pipeline_avg": 68.37,
+    "end_to_end_pipeline_p95": 80.84
+  },
+  "throughput_qps": {
+    "vector_search_qps": 2225.09
+  }
+}

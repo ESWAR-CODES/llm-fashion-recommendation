@@ -18,6 +18,8 @@
   "paths": {
     "catalog_csv": "artifacts/catalog.csv",
     "catalog_ids_json": "artifacts/catalog_ids.json",
+    "catalog_images_dir": "data/catalog_images",
+    "image_cdn_url": "",
     "data_audit_json": "artifacts/data_audit.json",
     "catalog_manifest_json": "artifacts/catalog_manifest.json",
     "product_descriptions_csv": "artifacts/product_descriptions.csv",

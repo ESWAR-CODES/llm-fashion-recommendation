@@ -25,7 +25,6 @@ if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
 import numpy as np
-import torch
 from PIL import Image
 
 from services.config_service import resolve_path, ConfigService
@@ -140,9 +139,13 @@ def generate_clip_embeddings(
 
     # Maximize CPU efficiency if on CPU
     if device == "cpu":
-        avail_threads = os.cpu_count() or 8
-        torch.set_num_threads(avail_threads)
-        print(f"[INFO] Configured PyTorch CPU threads: {avail_threads}")
+        try:
+            import torch
+            avail_threads = os.cpu_count() or 8
+            torch.set_num_threads(avail_threads)
+            print(f"[INFO] Configured PyTorch CPU threads: {avail_threads}")
+        except ImportError:
+            pass
 
     cfg = ConfigService.get_instance()
     out_npy_path = resolve_path(output_npy) if output_npy else cfg.get_path("clip_embeddings_npy")

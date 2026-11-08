@@ -45,15 +45,20 @@ def render_sidebar() -> str:
         ps = PersistenceService.get_instance()
         profiles = ps.list_profiles()
 
+        # Isolate anonymous sessions: assign a fresh dedicated guest profile if none set
+        if "active_profile_id" not in st.session_state:
+            guest_pid = ps.create_profile()
+            st.session_state.active_profile_id = guest_pid
+            profiles = ps.list_profiles()
+
         if not profiles:
-            # Create a default profile
             default_id = ps.create_profile()
             profiles = ps.list_profiles()
             st.session_state.active_profile_id = default_id
 
         profile_ids = [p["profile_id"] for p in profiles]
 
-        if "active_profile_id" not in st.session_state or st.session_state.active_profile_id not in profile_ids:
+        if st.session_state.active_profile_id not in profile_ids:
             st.session_state.active_profile_id = profile_ids[0]
 
         curr_prof_idx = profile_ids.index(st.session_state.active_profile_id)
@@ -67,15 +72,15 @@ def render_sidebar() -> str:
 
         col_new, col_reset = st.columns(2)
         with col_new:
-            if st.button("➕ New", use_container_width=True):
+            if st.button("➕ New", use_container_width=True, help="Create a fresh isolated guest session"):
                 new_pid = ps.create_profile()
                 st.session_state.active_profile_id = new_pid
                 st.rerun()
 
         with col_reset:
-            if st.button("🧹 Clear", use_container_width=True):
+            if st.button("🧹 Clear", use_container_width=True, help="Reset preferences & constraints for current session"):
                 ps.clear_active_constraints(st.session_state.active_profile_id)
-                st.success("State cleared!")
+                st.success("Session reset!")
 
         st.markdown("---")
 
@@ -83,11 +88,18 @@ def render_sidebar() -> str:
         st.markdown("#### ⚙️ System Status")
         hw = ConfigService.get_instance().get_hardware_info()
         st.caption(f"**Runtime:** {hw['platform']} ({hw['device_name']})")
-        st.caption(f"**RAM Available:** {hw['system_ram_available_gb']} GB")
-        st.caption("**Dataset:** 10,000 Catalog Items (Frozen)")
-        st.caption("**Retriever:** MiniLM-L6-v2 (CPU Ready)")
+        st.caption(f"**Memory Avail:** {hw['system_ram_available_gb']} GB")
+        torch_status = hw.get("torch_version", "Not Installed")
+        if torch_status == "Not Installed":
+            st.caption("**ML Runtime:** Pure CPU (Zero PyTorch)")
+        else:
+            st.caption(f"**PyTorch:** {torch_status}")
+        st.caption("**Catalog:** 10,000 Items (Frozen)")
+        st.caption("**Text Retrieval:** all-MiniLM-L6-v2")
+        st.caption("**Visual Retrieval:** CLIP ViT-B/32")
+        st.caption("**Extraction Engine:** Hybrid Grounded / LLM")
 
         st.markdown("---")
-        st.caption("Phase 1: Architecture Migration Complete")
+        st.caption("Phase 3: Production & Submission Ready")
 
     return selected_view

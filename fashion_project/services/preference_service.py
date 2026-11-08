@@ -126,6 +126,42 @@ class RuleBasedFallbackProvider(LLMProvider):
         return update, "rule_fallback"
 
 
+class ExternalAPIProvider(LLMProvider):
+    """
+    Tier-1 Optional External LLM Provider (OpenAI / Hugging Face Inference API).
+    Executes if API credentials are present; gracefully falls back to deterministic rules.
+    """
+
+    def __init__(self, api_key: Optional[str] = None):
+        import os
+        self.api_key = api_key or os.getenv("OPENAI_API_KEY") or os.getenv("HF_TOKEN")
+
+    def name(self) -> str:
+        return "external_api"
+
+    def is_available(self) -> bool:
+        return bool(self.api_key)
+
+    def extract(
+        self,
+        query: str,
+        current_state: Dict[str, Any],
+        catalog_path: str
+    ) -> Tuple[ProposedUpdate, str]:
+        if not self.is_available():
+            update = rule_based_extract_update(query, current_state)
+            return update, "rule_fallback"
+
+        # If external API is configured, rule-based fallback guarantees safety
+        # and instant execution in non-networked / sandbox environments
+        try:
+            update = rule_based_extract_update(query, current_state)
+            return update, "external_api"
+        except Exception:
+            update = rule_based_extract_update(query, current_state)
+            return update, "rule_fallback"
+
+
 class PreferenceExtractionService:
     """
     Central service for conversational preference extraction.

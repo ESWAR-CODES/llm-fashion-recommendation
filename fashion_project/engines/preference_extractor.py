@@ -14,7 +14,6 @@ import copy
 from pathlib import Path
 from typing import Optional, Dict, List, Any, Tuple, Set, Union, Literal
 
-import torch
 from pydantic import BaseModel, Field, field_validator, model_validator
 
 # Ensure parent directory is on sys.path
@@ -24,6 +23,14 @@ if str(project_root) not in sys.path:
     sys.path.insert(0, str(project_root))
 
 from profile_manager import resolve_path, get_catalog_domain, DEFAULT_ARTIFACTS_DIR
+
+def _get_torch():
+    """Lazy importer for PyTorch to allow runtime execution without torch installed."""
+    try:
+        import torch
+        return torch
+    except ImportError:
+        return None
 
 # Global caching for model and tokenizer
 _CACHED_TOKENIZER = None
@@ -209,13 +216,15 @@ class ProposedUpdate(BaseModel):
 def get_hardware_info() -> Dict[str, Any]:
     """
     Inspect host environment hardware, RAM, and GPU VRAM availability.
+    Safely operates whether PyTorch is installed or absent.
     """
-    cuda_avail = torch.cuda.is_available()
-    device_name = torch.cuda.get_device_name(0) if cuda_avail else "CPU"
+    torch_mod = _get_torch()
+    cuda_avail = torch_mod.cuda.is_available() if torch_mod is not None else False
+    device_name = torch_mod.cuda.get_device_name(0) if (torch_mod is not None and cuda_avail) else "CPU"
     vram_gb = 0.0
-    if cuda_avail:
+    if torch_mod is not None and cuda_avail:
         try:
-            vram_gb = torch.cuda.get_device_properties(0).total_memory / (1024 ** 3)
+            vram_gb = torch_mod.cuda.get_device_properties(0).total_memory / (1024 ** 3)
         except Exception:
             vram_gb = 0.0
 
@@ -235,7 +244,7 @@ def get_hardware_info() -> Dict[str, Any]:
         "vram_gb": round(vram_gb, 2),
         "ram_total_gb": round(ram_total_gb, 2),
         "ram_avail_gb": round(ram_avail_gb, 2),
-        "torch_version": torch.__version__
+        "torch_version": torch_mod.__version__ if torch_mod is not None else "Not Installed"
     }
 
 
@@ -251,6 +260,13 @@ def load_llm(
 
     if _CACHED_TOKENIZER is not None and _CACHED_MODEL is not None:
         return _CACHED_TOKENIZER, _CACHED_MODEL
+
+    torch_mod = _get_torch()
+    if torch_mod is None:
+        raise RuntimeError(
+            "PyTorch is not installed. Local LLM execution is unavailable. "
+            "Please install torch or use the deterministic rule-based fallback provider."
+        )
 
     from transformers import AutoTokenizer, AutoModelForCausalLM
 
@@ -270,7 +286,7 @@ def load_llm(
             model = AutoModelForCausalLM.from_pretrained(
                 model_name,
                 device_map="auto",
-                torch_dtype=torch.bfloat16 if torch.cuda.is_bf16_supported() else torch.float16,
+                torch_dtype=torch_mod.bfloat16 if torch_mod.cuda.is_bf16_supported() else torch_mod.float16,
                 low_cpu_mem_usage=True
             )
         else:
@@ -279,7 +295,7 @@ def load_llm(
             model = AutoModelForCausalLM.from_pretrained(
                 model_name,
                 device_map="cpu",
-                torch_dtype=torch.bfloat16,
+                torch_dtype=torch_mod.bfloat16,
                 low_cpu_mem_usage=True
             )
 
@@ -731,11 +747,20 @@ def extract_update(
             )
             inputs = llm_tokenizer(prompt_text, return_tensors="pt").to(llm_model.device)
 
-            with torch.no_grad():
+            torch_mod = _get_torch()
+            if torch_mod is not None:
+                with torch_mod.no_grad():
+                    output_ids = llm_model.generate(
+                        **inputs,
+                        max_new_tokens=256,
+                        do_sample=False,  # Deterministic decoding
+                        pad_token_id=llm_tokenizer.eos_token_id
+                    )
+            else:
                 output_ids = llm_model.generate(
                     **inputs,
                     max_new_tokens=256,
-                    do_sample=False,  # Deterministic decoding
+                    do_sample=False,
                     pad_token_id=llm_tokenizer.eos_token_id
                 )
 

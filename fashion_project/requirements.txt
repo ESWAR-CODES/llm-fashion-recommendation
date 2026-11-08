@@ -1,18 +1,11 @@
-# Core Application & ML Runtime Dependencies
+# Production Runtime Dependencies for Streamlit Community Cloud
+# Lightweight CPU deployment - operates with pure NumPy vector retrieval & zero PyTorch requirement
 streamlit>=1.30.0
 pandas>=2.0.0
 numpy>=1.24.0
 pillow>=10.0.0
 pydantic>=2.5.0
-sentence-transformers>=2.2.0
-torch>=2.0.0
 scikit-learn>=1.3.0
 scipy>=1.11.0
 psutil>=5.9.0
-
-# Optional Model Preparation & Development Dependencies
-transformers>=4.36.0
-accelerate>=0.26.0
-watchdog>=3.0.0
-pyarrow>=12.0.0
-ipywidgets>=8.1.0
+requests>=2.31.0

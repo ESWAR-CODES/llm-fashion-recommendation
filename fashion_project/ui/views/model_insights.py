@@ -49,7 +49,8 @@ def render_model_insights_view():
     with col3:
         st.metric("Disk Free", f"{hw['disk_free_gb']} GB", f"Platform: {hw['platform']}")
     with col4:
-        st.metric("Python", hw["python_version"], "Streamlit 1.67.0")
+        torch_ver = hw.get("torch_version", "Not Installed")
+        st.metric("PyTorch Runtime", "Active" if torch_ver != "Not Installed" else "Lightweight Mode", torch_ver)
 
     st.markdown("---")
 
@@ -61,10 +62,12 @@ def render_model_insights_view():
     m_col1, m_col2, m_col3 = st.columns(3)
     with m_col1:
         st.markdown("#### 📝 Text Model (MiniLM)")
+        enc_engine = "Live SentenceTransformer" if emb_svc.is_encoder_available() else "NumPy Centroid Projection"
         st.markdown(f"""
         - **Model:** `sentence-transformers/all-MiniLM-L6-v2`
         - **Dimensions:** `{matrix.shape[1]}`
         - **Catalog Matrix:** `{matrix.shape[0]} items`
+        - **Query Engine:** `{enc_engine}`
         - **Precision:** `{matrix.dtype}`
         - **Normalization:** `L2 = 1.0 (Unit-normalized)`
         - **Status:** 🟢 **READY (Precomputed)**
@@ -73,13 +76,14 @@ def render_model_insights_view():
     with m_col2:
         st.markdown("#### 📷 Visual Model (CLIP)")
         clip_ready = clip_status["ready"]
+        encoder_avail = clip_status.get("encoder_available", False)
+        status_label = "🟢 **READY (Encoder & Index Active)**" if (clip_ready and encoder_avail) else ("🟢 **READY (Precomputed Index Active)**" if clip_ready else "🟡 **OFFLINE**")
         st.markdown(f"""
         - **Model:** `{clip_status['model_name']}`
         - **Dimensions:** `{clip_status['dimension']}`
         - **Indexed Images:** `{clip_status['indexed_image_count']}`
-        - **Artifact File:** `{clip_status['artifact_exists']}`
-        - **Device:** `{clip_status['device'].upper()}`
-        - **Status:** {'🟢 **READY (Indexed)**' if clip_ready else '🟡 **OFFLINE / GENERATING**'}
+        - **Image Upload:** {'Enabled' if encoder_avail else 'Disabled (Lightweight CPU mode)'}
+        - **Status:** {status_label}
         """)
 
     with m_col3:

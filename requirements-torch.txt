@@ -1,0 +1,7 @@
+# Optional Dependencies for Live Neural Network Query Encoding & GPU Inference
+# Install only if live query text/image encoding via SentenceTransformers is desired
+-r requirements.txt
+torch>=2.0.0
+sentence-transformers>=2.2.0
+transformers>=4.36.0
+accelerate>=0.26.0

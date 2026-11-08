@@ -113,6 +113,11 @@ class CLIPService:
 
         return loaded
 
+    @property
+    def embeddings(self) -> Optional[np.ndarray]:
+        """Expose precomputed CLIP visual embeddings matrix."""
+        return self._embeddings
+
     def is_visual_retrieval_ready(self) -> bool:
         """Return True only if verified visual embeddings exist on disk."""
         cat_svc = CatalogService.get_instance()
@@ -124,18 +129,33 @@ class CLIPService:
             self._embeddings.shape[1] == self.dimension
         )
 
+    def is_encoder_available(self) -> bool:
+        """Check if live sentence-transformers / PyTorch CLIP encoder can be loaded."""
+        try:
+            import torch
+            from sentence_transformers import SentenceTransformer
+            return True
+        except ImportError:
+            return False
+
     def get_status(self) -> Dict[str, Any]:
         """Report accurate operational status of CLIP visual retrieval."""
         ready = self.is_visual_retrieval_ready()
+        encoder_avail = self.is_encoder_available()
         return {
             "ready": ready,
+            "encoder_available": encoder_avail,
             "model_name": self.model_name,
             "dimension": self.dimension,
             "artifact_exists": self.embeddings_path.exists(),
             "manifest_exists": self.manifest_path.exists(),
             "indexed_image_count": len(self._embeddings) if self._embeddings is not None else 0,
             "device": self.device,
-            "message": "Visual search operational" if ready else "Visual embeddings not yet indexed (offline generation required)"
+            "message": (
+                "Visual search operational (Encoder & precomputed index active)" if (ready and encoder_avail)
+                else ("Visual precomputed index operational (Lightweight CPU mode, live encoder disabled)" if ready
+                else "Visual embeddings not yet indexed (offline generation required)")
+            )
         }
 
     @staticmethod
@@ -196,12 +216,21 @@ class CLIPService:
     def _get_encoder(self):
         """Lazy model loading with safety guard against simultaneous heavy GPU allocations."""
         if self._model is None:
+            try:
+                import torch
+                from sentence_transformers import SentenceTransformer
+            except ImportError as e:
+                raise RuntimeError(
+                    "PyTorch and sentence-transformers are required to encode new images. "
+                    "In lightweight CPU deployment mode, live image encoding is disabled while "
+                    "precomputed catalog visual vectors and text search remain fully active."
+                ) from e
+
             import psutil
             avail_gb = psutil.virtual_memory().available / (1024**3)
             if avail_gb < 1.0:
                 raise MemoryError(f"Insufficient RAM to load CLIP encoder ({avail_gb:.2f} GB available).")
 
-            from sentence_transformers import SentenceTransformer
             print(f"[INFO] Initializing CLIP model '{self.model_name}' on device '{self.device}'...")
             model = SentenceTransformer(self.model_name, device=self.device)
             model.eval()

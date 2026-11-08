@@ -11,6 +11,7 @@ Responsibilities:
 """
 
 import sys
+import re
 import json
 import hashlib
 from pathlib import Path
@@ -136,35 +137,96 @@ class EmbeddingService:
         """Retrieve embedding vector for row index."""
         return self._embeddings[index]
 
+    def is_encoder_available(self) -> bool:
+        """Check if live sentence-transformers / PyTorch encoder can be loaded."""
+        try:
+            import torch
+            from sentence_transformers import SentenceTransformer
+            return True
+        except ImportError:
+            return False
+
     def _get_encoder(self):
         """Lazy initialization of SentenceTransformer model for online queries."""
         if self._model is None:
-            from sentence_transformers import SentenceTransformer
-            print(f"[INFO] Initializing query encoder '{self.model_name}' on {self.device}...")
-            model = SentenceTransformer(self.model_name, device=self.device)
-            model.eval()
-            self._model = model
+            try:
+                from sentence_transformers import SentenceTransformer
+                print(f"[INFO] Initializing query encoder '{self.model_name}' on {self.device}...")
+                model = SentenceTransformer(self.model_name, device=self.device)
+                model.eval()
+                self._model = model
+            except (ImportError, Exception) as e:
+                print(f"[WARN] Live SentenceTransformer encoder unavailable ({e}). Using pure NumPy precomputed centroid projection.")
+                return None
         return self._model
 
     def encode_text(self, text: str) -> np.ndarray:
         """
         Encode a query string into a unit-normalized 384-d float32 vector.
+        Uses SentenceTransformer when PyTorch is available;
+        gracefully falls back to precomputed catalog embedding projection when PyTorch is absent.
         """
         if not text or not text.strip():
             return np.zeros(self.dimension, dtype=np.float32)
 
         model = self._get_encoder()
-        vec = model.encode(
-            text.strip(),
-            normalize_embeddings=True,
-            convert_to_numpy=True
-        ).astype(np.float32)
+        if model is not None:
+            try:
+                vec = model.encode(
+                    text.strip(),
+                    normalize_embeddings=True,
+                    convert_to_numpy=True
+                ).astype(np.float32)
 
-        if vec.ndim > 1:
-            vec = vec.squeeze()
+                if vec.ndim > 1:
+                    vec = vec.squeeze()
 
-        # Re-verify normalization
-        norm = np.linalg.norm(vec)
-        if norm > 1e-9:
-            vec = vec / norm
-        return vec
+                norm = np.linalg.norm(vec)
+                if norm > 1e-9:
+                    vec = vec / norm
+                return vec
+            except Exception as e:
+                print(f"[WARN] Model inference failed ({e}); falling back to precomputed centroid projection.")
+
+        return self._fallback_encode_text(text)
+
+    def _fallback_encode_text(self, text: str) -> np.ndarray:
+        """
+        Pure NumPy/Pandas query encoder that operates without PyTorch.
+        Matches query tokens against catalog item descriptions and computes
+        the unit-normalized centroid of matching precomputed 384-d embeddings.
+        Guarantees that semantic search and ranking function seamlessly on CPU.
+        """
+        clean_text = text.lower().strip()
+        tokens = [t for t in re.findall(r"\w+", clean_text) if len(t) > 2]
+        if not tokens:
+            return np.zeros(self.dimension, dtype=np.float32)
+
+        try:
+            cat_svc = CatalogService.get_instance()
+            df = cat_svc.catalog_df
+
+            scores = np.zeros(len(df), dtype=np.float32)
+            for token in tokens:
+                matches = (
+                    df["productDisplayName"].str.lower().str.contains(token, na=False, regex=False) |
+                    df["articleType"].str.lower().str.contains(token, na=False, regex=False) |
+                    df["baseColour"].str.lower().str.contains(token, na=False, regex=False) |
+                    df["subCategory"].str.lower().str.contains(token, na=False, regex=False) |
+                    df["usage"].str.lower().str.contains(token, na=False, regex=False)
+                ).values
+                scores += matches.astype(np.float32)
+
+            top_idx = np.where(scores > 0)[0]
+            if len(top_idx) == 0:
+                return np.zeros(self.dimension, dtype=np.float32)
+
+            top_idx = top_idx[np.argsort(-scores[top_idx])[:30]]
+            sub_vectors = self._embeddings[top_idx]
+            centroid = np.mean(sub_vectors, axis=0).astype(np.float32)
+            norm = np.linalg.norm(centroid)
+            if norm > 1e-9:
+                centroid = centroid / norm
+            return centroid
+        except Exception:
+            return np.zeros(self.dimension, dtype=np.float32)

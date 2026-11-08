@@ -144,6 +144,13 @@ class ConfigService:
     def config(self) -> Dict[str, Any]:
         return self._config
 
+    def get(self, key: str, default: Any = None) -> Any:
+        """Safely retrieve a top-level key from configuration."""
+        return self._config.get(key, default)
+
+    def __getitem__(self, key: str) -> Any:
+        return self._config[key]
+
     @property
     def project_root(self) -> Path:
         return PROJECT_ROOT
@@ -172,8 +179,10 @@ class ConfigService:
         cuda_available = False
         device_name = "CPU"
         vram_gb = 0.0
+        torch_version = "Not Installed"
         try:
             import torch
+            torch_version = torch.__version__
             cuda_available = torch.cuda.is_available()
             if cuda_available:
                 device_name = torch.cuda.get_device_name(0)
@@ -187,6 +196,7 @@ class ConfigService:
             "cuda_available": cuda_available,
             "device_name": device_name,
             "vram_gb": vram_gb,
+            "torch_version": torch_version,
             "system_ram_gb": ram_gb,
             "system_ram_available_gb": ram_avail_gb,
             "disk_free_gb": round(disk_free / (1024**3), 2),

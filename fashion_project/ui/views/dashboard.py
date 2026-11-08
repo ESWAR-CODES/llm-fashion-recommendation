@@ -45,18 +45,19 @@ def render_dashboard_view():
     col_health, col_preview = st.columns([1.1, 0.9])
 
     with col_health:
-        st.markdown("""
+        clip_ready_badge = "🟢 Ready (512-d)" if clip_svc.is_visual_retrieval_ready() else "🟡 Standby"
+        st.markdown(f"""
         | Service Component | Operational Status | Architecture Implementation |
         |---|:---:|---|
         | **Dataset Loader** | 🟢 Ready | Ingests `styles.csv` (44.4k rows), validates 10k frozen subset |
         | **Catalog Service** | 🟢 Ready | O(1) in-memory lookup, 10,000 clothing items, Apparel & Footwear |
-        | **MiniLM Embeddings** | 🟢 Ready | Precomputed `(10000, 384)` float32 unit-normalized matrix |
-        | **Semantic Retrieval** | 🟢 Ready | Pure NumPy matrix dot product cosine similarity |
-        | **Personalized Ranker** | 🟢 Ready | Formula: `0.8*cos(q,v) + 0.2*cos(u,v)` with strict hard filters |
+        | **Text Embeddings** | 🟢 Ready | Precomputed `(10000, 384)` float32 unit-normalized matrix |
+        | **Visual Embeddings** | {clip_ready_badge} | Precomputed `(10000, 512)` float32 CLIP ViT-B/32 matrix |
+        | **Multimodal Retrieval** | 🟢 Ready | Pure NumPy matrix dot product cosine similarity |
+        | **Personalized Ranker** | 🟢 Ready | Formula: `Wt*cos(qt,vt) + Wv*cos(qv,vv) + Wp*cos(u,vt)` |
         | **Preference Service** | 🟢 Ready | Pydantic validation with deterministic fallback provider |
         | **Explanation Engine** | 🟢 Ready | Metadata attribute grounding validator with template fallback |
-        | **Product Image Service** | 🟢 Ready | Centralized PIL cache & canonical ID resolution |
-        | **CLIP Visual Foundation**| 🟡 Initialized | Offline preprocessing foundation (ViT-B/32 ready) |
+        | **Product Image Service** | 🟢 Ready | Multi-tier isolated catalog resolver with local & remote CDN |
         """)
 
     with col_preview:
@@ -71,4 +72,4 @@ def render_dashboard_view():
                 st.caption(f"**{prod.get('articleType')}**\n{prod.get('baseColour')}")
 
     st.markdown("---")
-    st.info("💡 **Phase 1 Milestone:** Architecture migrated into independent testable services with CPU-compatible Streamlit foundation.")
+    st.info("💡 **Production Ready:** Complete multimodal personalized fashion recommendation system with text & visual retrieval, hybrid personalized ranking, grounded explanations, and isolated guest sessions.")

@@ -44,10 +44,12 @@ def render_discovery_view():
     # 1. Operational Readiness Banner
     status_col1, status_col2 = st.columns([1.5, 1])
     with status_col1:
-        if clip_status["ready"]:
-            st.success("🟢 **Visual Search Operational**: CLIP ViT-B/32 precomputed embeddings active.")
+        if clip_status["ready"] and clip_status.get("encoder_available", False):
+            st.success("🟢 **Visual Search Operational**: CLIP ViT-B/32 encoder & precomputed index active.")
+        elif clip_status["ready"]:
+            st.success("🟢 **Catalog & Text Operational**: Precomputed embeddings active (Lightweight CPU mode).")
         else:
-            st.info("🟡 **Text-Only Operational**: CLIP visual embeddings offline/generating (Text search fully functional).")
+            st.info("🟡 **Text-Only Operational**: CLIP visual embeddings offline (Text search fully functional).")
     with status_col2:
         if profile_id:
             fb = pers_svc.get_feedback(profile_id)
@@ -79,14 +81,19 @@ def render_discovery_view():
         if uploaded_file is not None:
             is_valid, decoded_img, err_msg = clip_svc.validate_uploaded_image(uploaded_file)
             if is_valid and decoded_img:
-                query_image = decoded_img
                 p_col1, p_col2 = st.columns([0.3, 0.7])
                 with p_col1:
                     st.image(decoded_img, caption="Query Preview", width=110)
                 with p_col2:
-                    st.caption("✅ Image verified and preprocessed for CLIP inference.")
-                    if not clip_status["ready"]:
+                    if not clip_svc.is_encoder_available():
+                        st.info("ℹ️ Live image query extraction requires PyTorch. In lightweight CPU mode, search utilizes text retrieval and catalog filters.")
+                        query_image = None
+                    elif not clip_status["ready"]:
                         st.warning("⚠️ CLIP product index is not yet loaded on disk. Search will gracefully fall back to text modality.")
+                        query_image = None
+                    else:
+                        st.caption("✅ Image verified and preprocessed for CLIP inference.")
+                        query_image = decoded_img
             else:
                 st.error(f"❌ Invalid image: {err_msg}")
 

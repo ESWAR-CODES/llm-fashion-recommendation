@@ -16,9 +16,10 @@ import os
 import io
 import sys
 import base64
+import logging
 from pathlib import Path
 from functools import lru_cache
-from typing import Optional, Tuple, Dict, Any
+from typing import Optional, Tuple, Dict, Any, List
 
 # Ensure fashion_project root is in sys.path
 _current_dir = Path(__file__).resolve().parent
@@ -29,48 +30,144 @@ if str(_project_root) not in sys.path:
 from PIL import Image, ImageDraw, ImageFont
 from services.config_service import resolve_path, ConfigService
 
+logger = logging.getLogger(__name__)
+
 
 class ProductImageService:
     """
     Centralized service for managing and serving fashion product images.
-    Thread-safe and CPU-efficient with LRU in-memory decoded image caching.
+    Thread-safe and CPU-efficient with multi-tier resolution:
+      1. Isolated catalog image repository (data/catalog_images/)
+      2. Raw dataset image repository (data/raw/images/)
+      3. Local disk cache (.cache/images/)
+      4. Remote CDN resolver with HTTP fetch and disk cache
+      5. Consistent, deterministic placeholder generation
     """
 
     _instance: Optional["ProductImageService"] = None
 
-    def __init__(self, images_dir: Optional[str | Path] = None, cache_size: int = 512):
+    def __init__(
+        self,
+        images_dir: Optional[str | Path] = None,
+        cache_size: int = 512,
+        cdn_base_url: Optional[str] = None
+    ):
         cfg = ConfigService.get_instance()
-        self.images_dir = resolve_path(images_dir) if images_dir else cfg.get_path("images_dir")
+        catalog_images_path = resolve_path("data/catalog_images")
+        raw_images_path = cfg.get_path("images_dir")
+
+        # Determine primary search directories
+        self.search_dirs: List[Path] = []
+        if images_dir:
+            self.search_dirs.append(resolve_path(images_dir))
+        if catalog_images_path.exists() and catalog_images_path not in self.search_dirs:
+            self.search_dirs.append(catalog_images_path)
+        if raw_images_path.exists() and raw_images_path not in self.search_dirs:
+            self.search_dirs.append(raw_images_path)
+
+        self.images_dir = self.search_dirs[0] if self.search_dirs else catalog_images_path
+        self.cache_dir = resolve_path(".cache/images")
+        self.cache_dir.mkdir(parents=True, exist_ok=True)
+
+        # CDN base URL configuration (environment variable or config setting)
+        config_cdn = cfg.get("paths", {}).get("image_cdn_url", "")
+        self.cdn_base_url: Optional[str] = (
+            cdn_base_url
+            or os.getenv("IMAGE_CDN_URL")
+            or os.getenv("FASHION_IMAGE_CDN_URL")
+            or (config_cdn if config_cdn else None)
+        )
+        if self.cdn_base_url:
+            self.cdn_base_url = self.cdn_base_url.rstrip("/")
+
         self.cache_size = cache_size
         self._cache: Dict[str, Image.Image] = {}
         self._b64_cache: Dict[str, str] = {}
         self._known_files: Optional[set] = None
 
     @classmethod
-    def get_instance(cls, images_dir: Optional[str | Path] = None) -> "ProductImageService":
+    def get_instance(
+        cls,
+        images_dir: Optional[str | Path] = None,
+        cdn_base_url: Optional[str] = None
+    ) -> "ProductImageService":
         if cls._instance is None:
-            cls._instance = cls(images_dir)
+            cls._instance = cls(images_dir=images_dir, cdn_base_url=cdn_base_url)
         return cls._instance
 
     def _ensure_file_index(self):
         if self._known_files is None:
-            if self.images_dir.exists():
-                self._known_files = set(os.listdir(self.images_dir))
-            else:
-                self._known_files = set()
+            self._known_files = set()
+            for directory in self.search_dirs:
+                if directory.exists():
+                    try:
+                        self._known_files.update(os.listdir(directory))
+                    except Exception as e:
+                        logger.warning("Error reading directory %s: %s", directory, e)
+            if self.cache_dir.exists():
+                try:
+                    self._known_files.update(os.listdir(self.cache_dir))
+                except Exception as e:
+                    logger.warning("Error reading cache directory: %s", e)
+
+    def get_cdn_url(self, product_id: str | int) -> Optional[str]:
+        """Return the public CDN URL for this product image if a CDN base is configured."""
+        if not self.cdn_base_url:
+            return None
+        pid_str = str(product_id).strip()
+        return f"{self.cdn_base_url}/{pid_str}.jpg"
 
     def get_image_path(self, product_id: str | int) -> Optional[Path]:
-        """Resolve the file path for a canonical product ID if it exists."""
+        """Resolve the local file path for a canonical product ID if it exists."""
         pid_str = str(product_id).strip()
         self._ensure_file_index()
         filename = f"{pid_str}.jpg"
+
         if filename in self._known_files:
-            return self.images_dir / filename
+            # Check primary search directories
+            for directory in self.search_dirs:
+                candidate = directory / filename
+                if candidate.exists():
+                    return candidate
+            # Check cache directory
+            cached_candidate = self.cache_dir / filename
+            if cached_candidate.exists():
+                return cached_candidate
+
+        return None
+
+    def _fetch_from_cdn(self, product_id: str | int) -> Optional[Path]:
+        """Attempt to fetch an image from the remote CDN if configured."""
+        if not self.cdn_base_url:
+            return None
+        pid_str = str(product_id).strip()
+        url = f"{self.cdn_base_url}/{pid_str}.jpg"
+        target_path = self.cache_dir / f"{pid_str}.jpg"
+
+        try:
+            import urllib.request
+            req = urllib.request.Request(
+                url,
+                headers={"User-Agent": "FashionRecommender/1.0"}
+            )
+            with urllib.request.urlopen(req, timeout=5) as response:
+                if response.status == 200:
+                    data = response.read()
+                    with open(target_path, "wb") as f:
+                        f.write(data)
+                    if self._known_files is not None:
+                        self._known_files.add(f"{pid_str}.jpg")
+                    return target_path
+        except Exception as e:
+            logger.debug("CDN fetch failed for %s from %s: %s", pid_str, url, e)
+
         return None
 
     def has_image(self, product_id: str | int) -> bool:
-        """Check whether a product image exists on disk."""
-        return self.get_image_path(product_id) is not None
+        """Check whether a product image exists locally or is accessible."""
+        if self.get_image_path(product_id) is not None:
+            return True
+        return bool(self.cdn_base_url)
 
     def generate_placeholder(
         self,
@@ -121,6 +218,9 @@ class ProductImageService:
             return self._cache[cache_key]
 
         img_path = self.get_image_path(pid_str)
+        if img_path is None and self.cdn_base_url:
+            img_path = self._fetch_from_cdn(pid_str)
+
         img: Optional[Image.Image] = None
 
         if img_path and img_path.exists():
